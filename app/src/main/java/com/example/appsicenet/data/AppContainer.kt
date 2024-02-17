@@ -6,7 +6,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
-class RetrofitClient(context: Context) {
+class AppContainer(context: Context) {
     object RetrofitClient {
         private const val BASE_URL = "https://sicenet.surguanajuato.tecnm.mx"
 
