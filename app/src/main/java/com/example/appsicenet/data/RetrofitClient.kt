@@ -16,7 +16,9 @@ import retrofit2.Retrofit
 class RetrofitClient(context: Context) {
         private val BASE_URL = "https://sicenet.surguanajuato.tecnm.mx"
 
-        private val client = OkHttpClient.Builder()
+
+    //Obtención de cookies para la obtención de información
+    private val client = OkHttpClient.Builder()
             .addInterceptor(AddCookiesInterceptor(context))
             .addInterceptor(ReceivedCookiesInterceptor(context))
             .addInterceptor(createLoggingInterceptor())

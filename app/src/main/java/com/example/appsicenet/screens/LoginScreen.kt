@@ -135,15 +135,15 @@ private fun loginRequestBody(matricula: String, contrasenia: String): RequestBod
     """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
 }
 
-public fun profileRequestBody(): RequestBody {
-    return """
-        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <soap:Body>
-            <getAlumnoAcademicoWithLineamiento xmlns="http://tempuri.org/" />
-          </soap:Body>
-        </soap:Envelope>
-    """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
-}
+//public fun profileRequestBody(): RequestBody {
+//    return """
+//        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+//          <soap:Body>
+//            <getAlumnoAcademicoWithLineamiento xmlns="http://tempuri.org/" />
+//          </soap:Body>
+//        </soap:Envelope>
+//    """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
+//}
 
 private fun showError(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
