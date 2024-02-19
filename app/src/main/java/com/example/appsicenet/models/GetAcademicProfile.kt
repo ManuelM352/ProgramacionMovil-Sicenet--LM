@@ -1,6 +1,5 @@
 package com.example.appsicenet.models
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
@@ -24,7 +23,7 @@ data class GetAlumnoAcademicoWithLineamientoResponse @JvmOverloads constructor(
 )
 
 @Serializable
-data class AlumnoAcademicoResult(
+data class Attributes(
     val especialidad: String,
     val carrera: String,
     val nombre: String,

@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.appsicenet.data.RetrofitClient
 import com.example.appsicenet.models.AccessLoginResponse
 import com.example.appsicenet.models.LoginResult
@@ -36,7 +37,7 @@ import retrofit2.Response
 
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
     var matricula by remember { mutableStateOf("") }
     var contrasenia by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -66,7 +67,7 @@ fun LoginScreen() {
 
             onClick = {
 
-                authenticate(context,matricula, contrasenia) },
+                authenticate(context,matricula, contrasenia, navController, viewModel) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Iniciar sesión")
@@ -75,7 +76,7 @@ fun LoginScreen() {
 }
 
 
-private fun authenticate(context: Context, matricula: String, contrasenia: String) {
+private fun authenticate(context: Context, matricula: String, contrasenia: String,  navController: NavController , viewModel: ProfileViewModel) {
     val bodyLogin = loginRequestBody(matricula, contrasenia)
     val service = RetrofitClient(context).retrofitService
 
@@ -136,15 +137,15 @@ private fun loginRequestBody(matricula: String, contrasenia: String): RequestBod
     """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
 }
 
-//public fun profileRequestBody(): RequestBody {
-//    return """
-//        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-//          <soap:Body>
-//            <getAlumnoAcademicoWithLineamiento xmlns="http://tempuri.org/" />
-//          </soap:Body>
-//        </soap:Envelope>
-//    """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
-//}
+private fun profileRequestBody(): RequestBody {
+    return """
+        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+            <getAlumnoAcademicoWithLineamiento xmlns="http://tempuri.org/" />
+          </soap:Body>
+        </soap:Envelope>
+    """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
+}
 
 private fun showError(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()

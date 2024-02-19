@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.appsicenet.navegation.AppNavigation
 import com.example.appsicenet.screens.LoginScreen
 import com.example.appsicenet.ui.theme.AppSicenetTheme
 
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LoginScreen()
+                    AppNavigation()
                 }
             }
         }
@@ -35,6 +36,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     AppSicenetTheme {
-        LoginScreen()
+        //LoginScreen()
     }
 }
