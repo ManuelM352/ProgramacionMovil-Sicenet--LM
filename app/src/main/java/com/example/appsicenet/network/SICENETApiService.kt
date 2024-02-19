@@ -1,5 +1,6 @@
 package com.example.appsicenet.network
 
+import com.example.appsicenet.models.Envelope
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -20,6 +21,6 @@ interface SICENETApiService {
         "SOAPAction: http://tempuri.org/getAlumnoAcademicoWithLineamiento"
     )
     @POST("/ws/wsalumnos.asmx")
-    fun getAcademicProfile(@Body body: RequestBody): Call<ResponseBody>
+    fun getAcademicProfile(@Body body: RequestBody): Call<Envelope>
 
 }

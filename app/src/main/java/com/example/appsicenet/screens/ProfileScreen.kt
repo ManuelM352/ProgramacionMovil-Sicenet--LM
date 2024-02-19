@@ -16,27 +16,32 @@ import com.example.appsicenet.navegation.NavigationScreens
 
 @Composable
 fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
-//    val attributes = viewModel.attributes
-//    if (attributes != null) {
-//        Column(modifier = Modifier.padding(16.dp)) {
-//            Text(text = "Nombre: ${attributes.nombre}")
-//            Text(text = "Matrícula: ${attributes.matricula}")
-//            Text(text = "Carrera: ${attributes.carrera}")
-//
-//        }
-//    } else {
-//        Column(modifier = Modifier.padding(16.dp)) {
-//            Text(text = "No se pudo obtener el perfil académico.")
-//        }
-//    }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Data Screen")
-        Button(onClick = { navController.navigate(NavigationScreens.LoginScreen.route) }) {
-            Text(text = "Cerrar sesion")
+    val attributes = viewModel.attributes
+    if (attributes != null) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Nombre: ${attributes.nombre}")
+            Text(text = "Matrícula: ${attributes.matricula}")
+            Text(text = "Carrera: ${attributes.carrera}")
+
+            Button(onClick = { navController.navigate(NavigationScreens.LoginScreen.route) }) {
+                Text(text = "Cerrar sesion")
+            }
+        }
+
+    } else {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "No se pudo obtener el perfil académico.")
         }
     }
+
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Text(text = "Data Screen")
+//        Button(onClick = { navController.navigate(NavigationScreens.LoginScreen.route) }) {
+//            Text(text = "Cerrar sesion")
+//        }
+//    }
 }

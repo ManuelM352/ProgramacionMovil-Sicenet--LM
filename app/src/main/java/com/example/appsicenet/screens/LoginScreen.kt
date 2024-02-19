@@ -25,7 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.appsicenet.data.RetrofitClient
 import com.example.appsicenet.models.AccessLoginResponse
+import com.example.appsicenet.models.Attributes
+import com.example.appsicenet.models.Envelope
 import com.example.appsicenet.models.LoginResult
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -84,31 +87,31 @@ private fun authenticate(context: Context, matricula: String, contrasenia: Strin
         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
             if (response.isSuccessful) {
 
-                // Obtener la cadena de respuesta completa
-                val responseBodyString = response.body()?.toString()
+                val service = RetrofitClient(context).retrofitService
+                val bodyProfile = profileRequestBody()
+                service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
+                    override fun onResponse(call: Call<Envelope>, response: Response<Envelope>) {
+                        if (response.isSuccessful) {
+                            val envelope = response.body()
+                            val alumnoResultJson: String? = envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
 
-                // Imprimir la cadena de respuesta en el log
-                Log.w("Respuesta completa", responseBodyString ?: "Cuerpo de respuesta vacío")
+                            // Deserializa la cadena JSON a AlumnoAcademicoResult
+                            val json = Json { ignoreUnknownKeys = true }
+                            val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
 
-                // Deserializar la respuesta JSON
-                val json = Json { ignoreUnknownKeys = true } // Configuración opcional según tus necesidades
-
-                try {
-                    val accessLoginResponse = json.decodeFromString<AccessLoginResponse>(responseBodyString ?: "")
-                    // Aquí puedes manejar el objeto deserializado según tus necesidades
-                    Log.w("Objeto deserializado", accessLoginResponse.toString())
-
-                    val accessResultJson: String? = accessLoginResponse.body?.accesoLoginResponse?.accesoLoginResult
-                    if (!accessResultJson.isNullOrBlank()) {
-                        val accessResult: LoginResult = json.decodeFromString(accessResultJson)
-
-                    } else {
-                        showError(context, "Error: La cadena JSON de accesoLoginResult está vacía o nula")
+                            Log.w("exito", "se obtuvo el perfil 2: ${alumnoAcademicoResult}")
+                            val alumnoAcademicoResultJson = Json.encodeToString(alumnoAcademicoResult)
+                            viewModel.attributes=alumnoAcademicoResult
+                            navController.navigate("data")
+                        } else {
+                            showError(context, "Error al obtener el perfil académico. Código de respuesta: ${response.code()}")
+                        }
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    showError(context, "Error en la deserialización de la respuesta")
-                }
+                    override fun onFailure(call: Call<Envelope>, t: Throwable) {
+                        t.printStackTrace()
+                        showError(context, "Error en la solicitud del perfil académico")
+                    }
+                })
 
             } else {
                 showError(context, "Error en la autenticación. Código de respuesta: ${response.code()}")
