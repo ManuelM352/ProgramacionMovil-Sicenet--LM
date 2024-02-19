@@ -14,6 +14,6 @@ fun AppNavigation() {
     val viewModel = ProfileViewModel()
     NavHost(navController, startDestination = "login") {
         composable("login") { LoginScreen(navController = navController, viewModel = viewModel) }
-        composable("data") { ProfileScreen(navController = navController, viewModel = viewModel) }
+        composable("profile") { ProfileScreen(navController = navController, viewModel = viewModel) }
     }
 }

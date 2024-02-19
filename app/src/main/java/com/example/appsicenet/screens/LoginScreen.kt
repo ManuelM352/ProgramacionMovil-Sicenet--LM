@@ -28,12 +28,14 @@ import com.example.appsicenet.models.AccessLoginResponse
 import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.Envelope
 import com.example.appsicenet.models.LoginResult
+import com.example.appsicenet.network.AddCookiesInterceptor
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
+import okhttp3.internal.addHeaderLenient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -100,9 +102,14 @@ private fun authenticate(context: Context, matricula: String, contrasenia: Strin
                             val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
 
                             Log.w("exito", "se obtuvo el perfil 2: ${alumnoAcademicoResult}")
-                            val alumnoAcademicoResultJson = Json.encodeToString(alumnoAcademicoResult)
-                            viewModel.attributes=alumnoAcademicoResult
-                            navController.navigate("data")
+
+                            if(alumnoAcademicoResult?.matricula?.length?: 9 == 9){
+                                viewModel.attributes = alumnoAcademicoResult
+                                val addCookiesInterceptor = AddCookiesInterceptor(context)
+
+                                addCookiesInterceptor.clearCookies()
+                                navController.navigate("profile")
+                            }
                         } else {
                             showError(context, "Error al obtener el perfil académico. Código de respuesta: ${response.code()}")
                         }

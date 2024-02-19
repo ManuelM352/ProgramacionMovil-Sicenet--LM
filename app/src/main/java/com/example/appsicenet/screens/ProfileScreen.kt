@@ -33,15 +33,4 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
             Text(text = "No se pudo obtener el perfil académico.")
         }
     }
-
-//    Column(
-//        modifier = Modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        Text(text = "Data Screen")
-//        Button(onClick = { navController.navigate(NavigationScreens.LoginScreen.route) }) {
-//            Text(text = "Cerrar sesion")
-//        }
-//    }
 }
