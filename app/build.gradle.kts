@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 }
 
 android {
@@ -73,5 +74,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation ("com.squareup.retrofit2:converter-simplexml:2.9.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.2")
+
 
 }

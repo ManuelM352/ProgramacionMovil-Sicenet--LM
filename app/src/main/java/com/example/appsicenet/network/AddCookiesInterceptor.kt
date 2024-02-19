@@ -1,6 +1,7 @@
 package com.example.appsicenet.network
 
 import android.content.Context
+import android.preference.Preference
 import android.preference.PreferenceManager
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -24,5 +25,12 @@ class AddCookiesInterceptor(private val context: Context) : Interceptor {
 
     companion object {
         const val PREF_COOKIES = "PREF_COOKIES"
+    }
+
+    fun clearCookies(){
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .edit()
+            .remove(PREF_COOKIES)
+            .apply()
     }
 }
