@@ -18,11 +18,13 @@ import org.simpleframework.xml.core.Persister
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
+interface AppContainer {
+    val SicenetRepository : SicenetRepository
+}
 
-class RetrofitClient(context: Context) {
+class RetrofitClient(context: Context): AppContainer {
         private val BASE_URL = "https://sicenet.surguanajuato.tecnm.mx"
-
-
+    
     //Obtención de cookies para la obtención de información
     private val client = OkHttpClient.Builder()
             .addInterceptor(AddCookiesInterceptor(context))
@@ -63,5 +65,9 @@ class RetrofitClient(context: Context) {
         val retrofitService: SICENETApiService by lazy {
             retrofit.create(SICENETApiService::class.java)
         }
+
+    override val SicenetRepository: SicenetRepository by lazy {
+        NetworkSicenetRepository(retrofitService)
+    }
 
 }

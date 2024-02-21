@@ -2,7 +2,9 @@ package com.example.appsicenet.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -20,10 +22,16 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
     if (attributes != null) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Nombre: ${attributes.nombre}")
+            Spacer(modifier = Modifier.height(16.dp))
             Text(text = "Matrícula: ${attributes.matricula}")
+            Spacer(modifier = Modifier.height(16.dp))
             Text(text = "Carrera: ${attributes.carrera}")
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "Especialidad: ${attributes.especialidad}")
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = { navController.navigate(NavigationScreens.LoginScreen.route) }) {
+            Button(onClick = { navController.navigate(NavigationScreens.LoginScreen.route)
+            }) {
                 Text(text = "Cerrar sesion")
             }
         }

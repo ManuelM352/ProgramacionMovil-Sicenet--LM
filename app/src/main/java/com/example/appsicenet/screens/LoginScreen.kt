@@ -69,9 +69,7 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-
             onClick = {
-
                 authenticate(context,matricula, contrasenia, navController, viewModel) },
             modifier = Modifier.fillMaxWidth()
         ) {
