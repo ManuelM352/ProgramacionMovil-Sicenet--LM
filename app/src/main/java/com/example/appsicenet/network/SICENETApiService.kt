@@ -15,7 +15,6 @@ interface SICENETApiService {
     )
     @POST("/ws/wsalumnos.asmx")
     fun login(@Body body: RequestBody): Call<ResponseBody>
-
     @Headers(
         "Content-Type: text/xml; charset=utf-8",
         "SOAPAction: http://tempuri.org/getAlumnoAcademicoWithLineamiento"

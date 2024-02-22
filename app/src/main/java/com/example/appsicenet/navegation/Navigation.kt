@@ -17,3 +17,4 @@ fun AppNavigation() {
         composable("profile") { ProfileScreen(navController = navController, viewModel = viewModel) }
     }
 }
+

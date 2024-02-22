@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.appsicenet.data.RetrofitClient
+import com.example.appsicenet.data.profileRequestBody
 import com.example.appsicenet.models.AccessLoginResponse
 import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.Envelope
@@ -131,7 +132,7 @@ private fun authenticate(context: Context, matricula: String, contrasenia: Strin
 }
 
 
-private fun loginRequestBody(matricula: String, contrasenia: String): RequestBody {
+fun loginRequestBody(matricula: String, contrasenia: String): RequestBody {
     return """
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
           <soap:Body>
@@ -145,15 +146,7 @@ private fun loginRequestBody(matricula: String, contrasenia: String): RequestBod
     """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
 }
 
-private fun profileRequestBody(): RequestBody {
-    return """
-        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <soap:Body>
-            <getAlumnoAcademicoWithLineamiento xmlns="http://tempuri.org/" />
-          </soap:Body>
-        </soap:Envelope>
-    """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
-}
+
 
 private fun showError(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
