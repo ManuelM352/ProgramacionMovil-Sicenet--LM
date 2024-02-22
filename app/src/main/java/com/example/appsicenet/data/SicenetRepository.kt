@@ -9,16 +9,16 @@ import retrofit2.Call
 
 
 interface SicenetRepository {
-    suspend fun getdatos(): Call<Envelope>
+    suspend fun getAcademicProfile(): Call<Envelope>
 }
 
 class NetworkSicenetRepository(
     private val sicenetApiService: SICENETApiService
 ) : SicenetRepository {
-    override suspend fun getdatos(): Call<Envelope> = sicenetApiService.getAcademicProfile(profileRequestBody())
+    override suspend fun getAcademicProfile(): Call<Envelope> = sicenetApiService.getAcademicProfile(profileRequestBody())
 }
 
-fun profileRequestBody(): RequestBody {
+private fun profileRequestBody(): RequestBody {
     return """
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
           <soap:Body>
