@@ -45,6 +45,8 @@ import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.Envelope
 import com.example.appsicenet.models.LoginResult
 import com.example.appsicenet.network.AddCookiesInterceptor
+import com.example.appsicenet.network.loginRequestBody
+import com.example.appsicenet.network.profileRequestBody
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -201,29 +203,6 @@ private fun getProfile(context: Context, navController: NavController, viewModel
     })
 }
 
-fun loginRequestBody(matricula: String, contrasenia: String): RequestBody {
-    return """
-        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <soap:Body>
-            <accesoLogin xmlns="http://tempuri.org/">
-              <strMatricula>s20120179</strMatricula>
-              <strContrasenia>St7-%Kd</strContrasenia>
-              <tipoUsuario>ALUMNO</tipoUsuario>
-            </accesoLogin>
-          </soap:Body>
-        </soap:Envelope>
-    """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
-}
-
-private fun profileRequestBody(): RequestBody {
-    return """
-        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <soap:Body>
-            <getAlumnoAcademicoWithLineamiento xmlns="http://tempuri.org/" />
-          </soap:Body>
-        </soap:Envelope>
-    """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
-}
 
 private fun showError(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
