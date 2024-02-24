@@ -1,4 +1,4 @@
-package com.example.appsicenet.screens
+package com.example.appsicenet.ui.screens
 
 import android.content.Context
 import android.util.Log
@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.appsicenet.data.RetrofitClient
 import com.example.appsicenet.models.AccessLoginResponse
@@ -46,7 +47,8 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
     var matricula by remember { mutableStateOf("") }
     var contrasenia by remember { mutableStateOf("") }
     val context = LocalContext.current
-
+    val marsViewModel: ProfileViewModel =
+        viewModel(factory = ProfileViewModel.Factory)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,7 +88,6 @@ private fun authenticate(context: Context, matricula: String, contrasenia: Strin
     service.login(bodyLogin).enqueue(object : Callback<ResponseBody> {
         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
             if (response.isSuccessful) {
-
                 val service = RetrofitClient(context).retrofitService
                 val bodyProfile = profileRequestBody()
                 service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
@@ -101,15 +102,11 @@ private fun authenticate(context: Context, matricula: String, contrasenia: Strin
 
                             Log.w("exito", "se obtuvo el perfil 2: ${alumnoAcademicoResult}")
 
-                            if(alumnoAcademicoResult?.matricula?.length?: 9 == 9){
-                                viewModel.attributes = alumnoAcademicoResult
-                                val addCookiesInterceptor = AddCookiesInterceptor(context)
+                            getProfile(context, navController,viewModel)
+                            
 
-                                addCookiesInterceptor.clearCookies()
-                                navController.navigate("profile")
-                            }
                         } else {
-                            showError(context, "Error al obtener el perfil académico. Código de respuesta: ${response.code()}")
+                            showError(context, "Credenciales invalidas")
                         }
                     }
                     override fun onFailure(call: Call<Envelope>, t: Throwable) {
@@ -117,7 +114,6 @@ private fun authenticate(context: Context, matricula: String, contrasenia: Strin
                         showError(context, "Error en la solicitud del perfil académico")
                     }
                 })
-
             } else {
                 showError(context, "Error en la autenticación. Código de respuesta: ${response.code()}")
             }
@@ -130,6 +126,35 @@ private fun authenticate(context: Context, matricula: String, contrasenia: Strin
     })
 }
 
+private fun getProfile(context: Context, navController: NavController, viewModel: ProfileViewModel) {
+    val service = RetrofitClient(context).retrofitService
+    val bodyProfile = profileRequestBody()
+    service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
+        override fun onResponse(call: Call<Envelope>, response: Response<Envelope>) {
+            if (response.isSuccessful) {
+                val envelope = response.body()
+                val alumnoResultJson: String? = envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
+
+                val json = Json { ignoreUnknownKeys = true }
+                val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
+
+                Log.w("Exito", "Se obtuvo el perfil 2: ${alumnoAcademicoResult}")
+                val alumnoAcademicoResultJson = Json.encodeToString(alumnoAcademicoResult)
+
+                val addCookiesInterceptor = AddCookiesInterceptor(context)
+                addCookiesInterceptor.clearCookies()
+                viewModel.attributes=alumnoAcademicoResult
+                navController.navigate("profile")
+            } else {
+                showError(context, "Error al obtener el perfil académico. Código de respuesta: ${response.code()}")
+            }
+        }
+        override fun onFailure(call: Call<Envelope>, t: Throwable) {
+            t.printStackTrace()
+            showError(context, "Error en la solicitud del perfil académico")
+        }
+    })
+}
 
 fun loginRequestBody(matricula: String, contrasenia: String): RequestBody {
     return """

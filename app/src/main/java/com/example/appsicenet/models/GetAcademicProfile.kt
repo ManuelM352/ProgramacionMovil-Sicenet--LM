@@ -27,5 +27,6 @@ data class Attributes(
     val especialidad: String,
     val carrera: String,
     val nombre: String,
-    val matricula:String
+    val matricula:String,
+    var acceso: Boolean? = null,
 )

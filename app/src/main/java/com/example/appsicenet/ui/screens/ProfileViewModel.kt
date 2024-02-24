@@ -1,4 +1,4 @@
-package com.example.appsicenet.screens
+package com.example.appsicenet.ui.screens
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

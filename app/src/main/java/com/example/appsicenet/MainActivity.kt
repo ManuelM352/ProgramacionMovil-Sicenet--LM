@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.appsicenet.navegation.AppNavigation
-import com.example.appsicenet.screens.LoginScreen
+import com.example.appsicenet.ui.screens.LoginScreen
 import com.example.appsicenet.ui.theme.AppSicenetTheme
 
 class MainActivity : ComponentActivity() {

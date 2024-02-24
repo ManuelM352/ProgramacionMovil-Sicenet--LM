@@ -1,4 +1,4 @@
-package com.example.appsicenet.screens
+package com.example.appsicenet.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +21,8 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
     val attributes = viewModel.attributes
     if (attributes != null) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Nombre: ${attributes.nombre}")
+
+            Text(text = "${attributes.nombre}")
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "Matrícula: ${attributes.matricula}")
             Spacer(modifier = Modifier.height(16.dp))
@@ -30,7 +31,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
             Text(text = "Especialidad: ${attributes.especialidad}")
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = { navController.navigate(NavigationScreens.LoginScreen.route)
+            Button(onClick = {navController.navigate(NavigationScreens.LoginScreen.route)
             }) {
                 Text(text = "Cerrar sesion")
             }
