@@ -42,7 +42,11 @@ import androidx.navigation.NavController
 import com.example.appsicenet.data.RetrofitClient
 import com.example.appsicenet.models.AccessLoginResponse
 import com.example.appsicenet.models.Attributes
+import com.example.appsicenet.models.CalificacionUnidades
+import com.example.appsicenet.models.CargaAcademicaResponse
+import com.example.appsicenet.models.Curso
 import com.example.appsicenet.models.Envelope
+import com.example.appsicenet.models.Kardex
 import com.example.appsicenet.models.LoginResult
 import com.example.appsicenet.network.AddCookiesInterceptor
 import com.example.appsicenet.network.loginRequestBody
@@ -147,7 +151,7 @@ private fun authenticate(context: Context, matricula: String, contrasenia: Strin
                             val json = Json { ignoreUnknownKeys = true }
                             val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
 
-                            Log.w("exito", "se obtuvo el perfil 2: ${alumnoAcademicoResult}")
+                            Log.w("exito", "se obtuvo el perfil: ${alumnoAcademicoResult}")
 
                             getProfile(context, navController,viewModel)
                             
@@ -189,7 +193,8 @@ private fun getProfile(context: Context, navController: NavController, viewModel
                 val alumnoAcademicoResultJson = Json.encodeToString(alumnoAcademicoResult)
 
                 val addCookiesInterceptor = AddCookiesInterceptor(context)
-                addCookiesInterceptor.clearCookies()
+                //addCookiesInterceptor.clearCookies()
+
                 viewModel.attributes=alumnoAcademicoResult
                 navController.navigate("profile")
             } else {
@@ -204,6 +209,71 @@ private fun getProfile(context: Context, navController: NavController, viewModel
 }
 
 
-private fun showError(context: Context, message: String) {
+fun getCalificacionesPorUnidad(xmlString: String): List<CalificacionUnidades> {
+    val cargaAcademicaResponse = Json.decodeFromString<CargaAcademicaResponse>(xmlString)
+    val cursos = cargaAcademicaResponse.cursos
+    val calificacionesPorUnidad = mutableListOf<CalificacionUnidades>()
+
+    cursos.forEach { curso ->
+        // Suponiendo que las calificaciones por unidad están marcadas con un estado especial en el atributo "EstadoMateria"
+        if (curso.estadoMateria == "Unidades") {
+            // Aquí puedes crear una instancia de CalificacionUnidades con los datos del curso y agregarla a la lista
+            val calificacionUnidades = CalificacionUnidades(
+                observaciones = "", // Puedes agregar observaciones si las tienes disponibles
+                c5 = "", // Aquí debes obtener la calificación de la quinta unidad
+                c4 = "", // Aquí debes obtener la calificación de la cuarta unidad
+                c3 = "", // Aquí debes obtener la calificación de la tercera unidad
+                c2 = "", // Aquí debes obtener la calificación de la segunda unidad
+                c1 = "", // Aquí debes obtener la calificación de la primera unidad
+                unidadesActivas = "", // Aquí debes obtener el número de unidades activas
+                materia = curso.materia,
+                grupo = curso.grupo
+            )
+            calificacionesPorUnidad.add(calificacionUnidades)
+        }
+    }
+    return calificacionesPorUnidad
+}
+
+// Esta función te permitirá obtener el kardex de un alumno
+fun getKardex(xmlString: String): List<Kardex> {
+    val cargaAcademicaResponse = Json.decodeFromString<CargaAcademicaResponse>(xmlString)
+    val cursos = cargaAcademicaResponse.cursos
+    val kardex = mutableListOf<Kardex>()
+
+    cursos.forEach { curso ->
+        // Suponiendo que el estado de la materia indica que es parte del kardex
+        if (curso.estadoMateria == "Kardex") {
+            // Aquí puedes crear una instancia de Kardex con los datos del curso y agregarla a la lista
+            val nuevoKardex = Kardex(
+                semestre1 = "", // Aquí debes obtener el semestre 1 del kardex
+                periodo1 = "", // Aquí debes obtener el periodo 1 del kardex
+                anio1 = "", // Aquí debes obtener el año 1 del kardex
+                semestre2 = "", // Aquí debes obtener el semestre 2 del kardex
+                periodo2 = "", // Aquí debes obtener el periodo 2 del kardex
+                anio2 = "", // Aquí debes obtener el año 2 del kardex
+                semestre3 = "", // Aquí debes obtener el semestre 3 del kardex
+                periodo3 = "", // Aquí debes obtener el periodo 3 del kardex
+                anio3 = "", // Aquí debes obtener el año 3 del kardex
+                claveMateria = curso.claveMateria,
+                claveOficialMateria = curso.claveOficialMateria,
+                materia = curso.materia,
+                creditos = curso.creditosMateria,
+                calificacion = 0, // Puedes dejar la calificación como 0 si no está disponible en este contexto
+                acreditacion = "" // Puedes dejar la acreditación como vacía si no está disponible en este contexto
+            )
+            kardex.add(nuevoKardex)
+        }
+    }
+    return kardex
+}
+
+// Esta función te permitirá obtener la carga académica de un alumno
+fun getCargaAcademica(xmlString: String): List<Curso> {
+    val cargaAcademicaResponse = Json.decodeFromString<CargaAcademicaResponse>(xmlString)
+    return cargaAcademicaResponse.cursos
+}
+
+fun showError(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

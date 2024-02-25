@@ -29,7 +29,7 @@ class RetrofitClient(context: Context): AppContainer {
     private val client = OkHttpClient.Builder()
             .addInterceptor(AddCookiesInterceptor(context))
             .addInterceptor(ReceivedCookiesInterceptor(context))
-            .addInterceptor(DeleteSessionCookies(context))
+            //.addInterceptor(DeleteSessionCookies(context))
             .addInterceptor(createLoggingInterceptor())
             .build()
 

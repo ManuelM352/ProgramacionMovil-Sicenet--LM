@@ -5,6 +5,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 
+//LOGIN
 fun loginRequestBody(matricula: String, contrasenia: String): RequestBody {
     return """
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -18,6 +19,8 @@ fun loginRequestBody(matricula: String, contrasenia: String): RequestBody {
         </soap:Envelope>
     """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
 }
+
+//PERFIL
 fun profileRequestBody(): RequestBody {
     return """
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -28,19 +31,21 @@ fun profileRequestBody(): RequestBody {
     """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
 }
 
-fun allCaliffinalRequestBody(): RequestBody {
+//CALIFICACION FINAL
+fun califfinalRequestBody(): RequestBody {
     return """
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
           <soap:Body>
             <getAllCalifFinalByAlumnos xmlns="http://tempuri.org/">
-              <bytModEducativo>unsignedByte</bytModEducativo>
+              <bytModEducativo>2</bytModEducativo>
             </getAllCalifFinalByAlumnos>
           </soap:Body>
         </soap:Envelope>
     """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
 }
 
-fun califUnidadesByAlumnoRequestBody(): RequestBody {
+//CALIFICACION POR UNIDAD
+fun califUnidadesRequestBody(): RequestBody {
     return """
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
           <soap:Body>
@@ -50,7 +55,8 @@ fun califUnidadesByAlumnoRequestBody(): RequestBody {
     """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
 }
 
-fun allKardexConPromedioByAlumnoRequestBody(): RequestBody {
+//KARDEX
+fun kardexRequestBody(): RequestBody {
     return """
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
           <soap:Body>
@@ -62,7 +68,8 @@ fun allKardexConPromedioByAlumnoRequestBody(): RequestBody {
     """.trimIndent().toRequestBody("text/xml; charset=utf-8".toMediaTypeOrNull())
 }
 
-fun cargaAcademicaByAlumnoRequestBody(): RequestBody {
+//CARGA ACADEMICA
+fun cargaAcademicaRequestBody(): RequestBody {
     return """
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
           <soap:Body>

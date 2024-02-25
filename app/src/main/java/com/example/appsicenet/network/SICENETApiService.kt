@@ -1,6 +1,7 @@
 package com.example.appsicenet.network
 
 import com.example.appsicenet.models.Envelope
+import com.example.appsicenet.models.EnvelopeCalf
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -31,7 +32,7 @@ interface SICENETApiService {
         "SOAPAction: http://tempuri.org/getAllCalifFinalByAlumnos"
     )
     @POST("/ws/wsalumnos.asmx")
-    fun getAllCalifFinalByAlumnos(@Body body: RequestBody): Call<Envelope>
+    fun getCalifFinal(@Body body: RequestBody): Call<EnvelopeCalf>
 
     //CALIFICACIONES POR UNIDAD
     @Headers(
@@ -41,6 +42,7 @@ interface SICENETApiService {
     @POST("/ws/wsalumnos.asmx")
     fun getCalifUnidadesByAlumno(@Body body: RequestBody): Call<Envelope>
 
+    //KARDEX
     @Headers(
         "Content-Type: text/xml; charset=utf-8",
         "SOAPAction: http://tempuri.org/getAllKardexConPromedioByAlumno"
@@ -48,6 +50,7 @@ interface SICENETApiService {
     @POST("/ws/wsalumnos.asmx")
     fun getAllKardexConPromedioByAlumno(@Body body: RequestBody): Call<Envelope>
 
+    //CARGA ACADEMICA
     @Headers(
         "Content-Type: text/xml; charset=utf-8",
         "SOAPAction: http://tempuri.org/getCargaAcademicaByAlumno"

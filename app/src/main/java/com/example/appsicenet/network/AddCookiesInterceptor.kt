@@ -27,10 +27,10 @@ class AddCookiesInterceptor(private val context: Context) : Interceptor {
         const val PREF_COOKIES = "PREF_COOKIES"
     }
 
-    fun clearCookies(){
-        PreferenceManager.getDefaultSharedPreferences(context)
-            .edit()
-            .remove(PREF_COOKIES)
-            .apply()
-    }
+//    fun clearCookies(){
+//        PreferenceManager.getDefaultSharedPreferences(context)
+//            .edit()
+//            .remove(PREF_COOKIES)
+//            .apply()
+//    }
 }

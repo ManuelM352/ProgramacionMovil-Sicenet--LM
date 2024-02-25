@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.appsicenet.ui.screens.CalfFinalScreen
 import com.example.appsicenet.ui.screens.LoginScreen
 import com.example.appsicenet.ui.screens.ProfileScreen
 import com.example.appsicenet.ui.screens.ProfileViewModel
@@ -21,8 +22,8 @@ fun AppNavigation() {
         composable("login") {
             LoginScreen(navController = navController, viewModel = viewModel) }
         composable("profile") {
-            ProfileScreen(navController = navController, viewModel = viewModel)
-
-        }
+            ProfileScreen(navController = navController, viewModel = viewModel)}
+        composable("calfFinal") {
+            CalfFinalScreen(navController = navController, viewModel = viewModel)}
     }
 }

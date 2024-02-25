@@ -12,6 +12,8 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.appsicenet.SicenetApplication
 import com.example.appsicenet.data.SicenetRepository
 import com.example.appsicenet.models.Attributes
+import com.example.appsicenet.models.CalificacionesFinales
+
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -24,26 +26,38 @@ sealed interface SicenetUiState {
 
 class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewModel() {
     var attributes: Attributes? = null
-    /** The mutable State that stores the status of the most recent request */
+
+    var calificacionesFinales: List<CalificacionesFinales>? = null
+
     var sicenetUiState: SicenetUiState by mutableStateOf(SicenetUiState.Loading)
         private set
 
-    /**
-     * Call getMarsPhotos() on init so we can display status immediately.
-     */
     init {
-        getMarsPhotos()
+        getProfile()
+        getCalificacionesFinales()
     }
 
-    /**
-     * Gets Mars photos information from the Mars API Retrofit service and updates the
-     * [MarsPhoto] [List] [MutableList].
-     */
-    fun getMarsPhotos() {
+    fun getProfile() {
         viewModelScope.launch {
             sicenetUiState = SicenetUiState.Loading
             sicenetUiState = try {
                 val listResult = sicenetRepository.getAcademicProfile()
+                SicenetUiState.Success(
+                    "Success: $listResult"
+                )
+            } catch (e: IOException) {
+                SicenetUiState.Error
+            } catch (e: HttpException) {
+                SicenetUiState.Error
+            }
+        }
+    }
+
+    private fun getCalificacionesFinales() {
+        viewModelScope.launch {
+            sicenetUiState = SicenetUiState.Loading
+            sicenetUiState = try {
+                val listResult = sicenetRepository.getCalificacionesFinales()
                 SicenetUiState.Success(
                     "Success: $listResult"
                 )
