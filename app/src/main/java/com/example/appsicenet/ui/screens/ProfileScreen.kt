@@ -44,10 +44,13 @@ import com.example.appsicenet.navegation.NavigationScreens
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.example.appsicenet.data.RetrofitClient
+import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.Envelope
 import com.example.appsicenet.models.EnvelopeCalf
+import com.example.appsicenet.models.EnvelopeCalfUni
 import com.example.appsicenet.network.AddCookiesInterceptor
+import com.example.appsicenet.network.califUnidadesRequestBody
 import com.example.appsicenet.network.califfinalRequestBody
 import com.example.appsicenet.network.profileRequestBody
 import kotlinx.serialization.encodeToString
@@ -70,7 +73,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
                 title = { Text(text = "Perfil") },
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate("login")
+                        navController.navigate("calfUnidades")
                     }) {
                         Icon(Icons.Default.Person, contentDescription = "Login")
                     }
@@ -165,7 +168,8 @@ private fun getCalificaciones(context: Context, navController: NavController, vi
                     Log.w("Exito", "Se obtuvieron los datos del alumno: $alumnoAcademicoResult")
 
                     // Ahora, podrías llamar a una función para obtener las calificaciones finales
-                    obtenerCalificacionesFinales(context, navController, viewModel)
+                    //obtenerCalificacionesFinales(context, navController, viewModel)
+                    obtenerCalificacionesUnidades(context, navController, viewModel)
                 } else {
                     showError(context, "No se pudieron obtener los datos del alumno.")
                 }
@@ -220,3 +224,45 @@ fun parseCalificacionesFinales(envelope: EnvelopeCalf): List<CalificacionesFinal
     val json = Json { ignoreUnknownKeys = true } // Configura el parser para ignorar claves desconocidas
     return json.decodeFromString(resultJson)
 }
+
+
+private fun obtenerCalificacionesUnidades(context: Context, navController: NavController, viewModel: ProfileViewModel) {
+    val service = RetrofitClient(context).retrofitService
+    val bodyCalificaciones = califUnidadesRequestBody() // Asume que ya tienes esta función
+
+    service.getCalifUnidades(bodyCalificaciones).enqueue(object : Callback<EnvelopeCalfUni> {
+        override fun onResponse(call: Call<EnvelopeCalfUni>, response: Response<EnvelopeCalfUni>) {
+            if (response.isSuccessful) {
+                val calificacionesEnvelope = response.body()
+                val alumnoResultJson: String? = calificacionesEnvelope?.bodyCalfUni?.getCalifUnidadesByAlumnoResponse?.getCalifUnidadesByAlumnoResult
+
+                Log.w("Exito", " ${alumnoResultJson}")
+
+                // Aquí puedes manejar la respuesta de las calificaciones finales
+                if (alumnoResultJson != null) {
+                    /// Llamar al método para procesar las calificaciones y actualizar el ViewModel
+                    val calificaciones = parseCalificacionesUnidades(calificacionesEnvelope)
+                    viewModel.calificacionesUnidades = calificaciones // Asigna la lista de calificaciones al ViewModel
+                    // Navega a la pantalla de calificaciones finales
+                    navController.navigate("calfUnidades")
+                } else {
+                    showError(context, "No se pudieron obtener las calificaciones.")
+                }
+            } else {
+                showError(context, "Error al obtener las calificaciones. Código de respuesta: ${response.code()}")
+            }
+        }
+
+        override fun onFailure(call: Call<EnvelopeCalfUni>, t: Throwable) {
+            t.printStackTrace()
+            showError(context, "Error en la solicitud de las calificaciones")
+        }
+    })
+}
+
+fun parseCalificacionesUnidades(envelope: EnvelopeCalfUni): List<CalificacionUnidades> {
+    val resultJson = envelope.bodyCalfUni.getCalifUnidadesByAlumnoResponse.getCalifUnidadesByAlumnoResult
+    val json = Json { ignoreUnknownKeys = true } // Configura el parser para ignorar claves desconocidas
+    return json.decodeFromString(resultJson)
+}
+

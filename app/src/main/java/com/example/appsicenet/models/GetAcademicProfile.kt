@@ -45,18 +45,48 @@ data class GetAllCalifFinalByAlumnosResponse @JvmOverloads constructor(
 
 
 
-
-@Root(name = "getCalifUnidadesResponse", strict = false)
-data class GetCalifUnidadesResponse @JvmOverloads constructor(
-    @field:Element(name = "getCalifUnidadesResponse", required = false)
-    var getCalifUnidadesResult: String = ""
+//CALIFICACIONES UNIDAD
+@Root(name = "Envelope", strict = false)
+data class EnvelopeCalfUni @JvmOverloads constructor(
+    @field:Element(name = "Body", required = false)
+    var bodyCalfUni: BodyCalfUni = BodyCalfUni()
 )
 
-@Root(name = "getKardexResponse", strict = false)
-data class GetAllKardexConPromedioResponse @JvmOverloads constructor(
-    @field:Element(name = "getKardexResponse", required = false)
-    var getKardexResult: String = ""
+@Root(name = "Body", strict = false)
+data class BodyCalfUni @JvmOverloads constructor(
+    @field:Element(name = "getCalifUnidadesByAlumnoResponse", required = false)
+    var getCalifUnidadesByAlumnoResponse: GetCalifUnidadesByAlumnoResponse = GetCalifUnidadesByAlumnoResponse()
 )
+
+@Root(name = "getCalifUnidadesByAlumnoResponse", strict = false)
+data class GetCalifUnidadesByAlumnoResponse @JvmOverloads constructor(
+    @field:Element(name = "getCalifUnidadesByAlumnoResult", required = false)
+    var getCalifUnidadesByAlumnoResult: String = ""
+)
+
+
+//KARDEX
+
+@Root(name = "Envelope", strict = false)
+data class EnvelopeKardex @JvmOverloads constructor(
+    @field:Element(name = "Body", required = false)
+    var bodyKardex: BodyKardex = BodyKardex()
+)
+
+@Root(name = "Body", strict = false)
+data class BodyKardex @JvmOverloads constructor(
+    @field:Element(name = "getAllKardexConPromedioByAlumnoResponse", required = false)
+    var getAllKardexConPromedioByAlumnoResponse: GetAllKardexConPromedioByAlumnoResponse = GetAllKardexConPromedioByAlumnoResponse()
+)
+
+@Root(name = "getAllKardexConPromedioByAlumnoResponse", strict = false)
+data class GetAllKardexConPromedioByAlumnoResponse @JvmOverloads constructor(
+    @field:Element(name = "getAllKardexConPromedioByAlumnoResult", required = false)
+    var getAllKardexConPromedioByAlumnoResult: String = ""
+)
+
+
+
 
 @Root(name = "getCargaAcademicaResponse", strict = false)
 data class GetCargaAcademicaResponse @JvmOverloads constructor(
@@ -83,16 +113,11 @@ data class CalificacionesFinales(
     val Observaciones: String
 )
 
-@Serializable
-data class CalificacionesResponse(
-    @SerialName("getCalifFinalResult") val calificaciones: List<CalificacionesFinales>
-)
-
 
 @Serializable
 data class CalificacionUnidades(
     @SerialName("Observaciones")
-    val observaciones: String,
+    val observaciones: String?,
     @SerialName("C5")
     val c5: String?,
     @SerialName("C4")
@@ -111,10 +136,7 @@ data class CalificacionUnidades(
     val grupo: String
 )
 
-@Serializable
-data class CalificacionesUnidadesResponse(
-    @SerialName("getCalifUnidadesResult") val calificaciones: List<CalificacionUnidades>
-)
+
 
 @Serializable
 data class Kardex(

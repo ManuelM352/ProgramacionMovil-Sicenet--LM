@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.appsicenet.SicenetApplication
 import com.example.appsicenet.data.SicenetRepository
 import com.example.appsicenet.models.Attributes
+import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
 
 import kotlinx.coroutines.launch
@@ -29,12 +30,15 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
 
     var calificacionesFinales: List<CalificacionesFinales>? = null
 
+    var calificacionesUnidades: List<CalificacionUnidades>? = null
+
     var sicenetUiState: SicenetUiState by mutableStateOf(SicenetUiState.Loading)
         private set
 
     init {
         getProfile()
         getCalificacionesFinales()
+        getCalificacionesUnidades()
     }
 
     fun getProfile() {
@@ -58,6 +62,22 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
             sicenetUiState = SicenetUiState.Loading
             sicenetUiState = try {
                 val listResult = sicenetRepository.getCalificacionesFinales()
+                SicenetUiState.Success(
+                    "Success: $listResult"
+                )
+            } catch (e: IOException) {
+                SicenetUiState.Error
+            } catch (e: HttpException) {
+                SicenetUiState.Error
+            }
+        }
+    }
+
+    private fun getCalificacionesUnidades() {
+        viewModelScope.launch {
+            sicenetUiState = SicenetUiState.Loading
+            sicenetUiState = try {
+                val listResult = sicenetRepository.getCalificacionesUnidades()
                 SicenetUiState.Success(
                     "Success: $listResult"
                 )

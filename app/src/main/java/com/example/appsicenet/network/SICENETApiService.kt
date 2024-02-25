@@ -2,6 +2,7 @@ package com.example.appsicenet.network
 
 import com.example.appsicenet.models.Envelope
 import com.example.appsicenet.models.EnvelopeCalf
+import com.example.appsicenet.models.EnvelopeCalfUni
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -40,7 +41,7 @@ interface SICENETApiService {
         "SOAPAction: http://tempuri.org/getCalifUnidadesByAlumno"
     )
     @POST("/ws/wsalumnos.asmx")
-    fun getCalifUnidadesByAlumno(@Body body: RequestBody): Call<Envelope>
+    fun getCalifUnidades(@Body body: RequestBody): Call<EnvelopeCalfUni>
 
     //KARDEX
     @Headers(
@@ -48,7 +49,8 @@ interface SICENETApiService {
         "SOAPAction: http://tempuri.org/getAllKardexConPromedioByAlumno"
     )
     @POST("/ws/wsalumnos.asmx")
-    fun getAllKardexConPromedioByAlumno(@Body body: RequestBody): Call<Envelope>
+    fun getKardex(@Body body: RequestBody): Call<Envelope>
+
 
     //CARGA ACADEMICA
     @Headers(
