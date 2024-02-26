@@ -49,12 +49,21 @@ import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.Envelope
 import com.example.appsicenet.models.EnvelopeCalf
 import com.example.appsicenet.models.EnvelopeCalfUni
+import com.example.appsicenet.models.EnvelopeKardex
+import com.example.appsicenet.models.Kardex
 import com.example.appsicenet.network.AddCookiesInterceptor
 import com.example.appsicenet.network.califUnidadesRequestBody
 import com.example.appsicenet.network.califfinalRequestBody
+import com.example.appsicenet.network.kardexRequestBody
 import com.example.appsicenet.network.profileRequestBody
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -169,7 +178,8 @@ private fun getCalificaciones(context: Context, navController: NavController, vi
 
                     // Ahora, podrías llamar a una función para obtener las calificaciones finales
                     //obtenerCalificacionesFinales(context, navController, viewModel)
-                    obtenerCalificacionesUnidades(context, navController, viewModel)
+                    //obtenerCalificacionesUnidades(context, navController, viewModel)
+                    getKardexProfile(context, navController, viewModel)
                 } else {
                     showError(context, "No se pudieron obtener los datos del alumno.")
                 }
@@ -266,3 +276,80 @@ fun parseCalificacionesUnidades(envelope: EnvelopeCalfUni): List<CalificacionUni
     return json.decodeFromString(resultJson)
 }
 
+
+private fun getKardexProfile(context: Context, navController: NavController, viewModel: ProfileViewModel) {
+    val service = RetrofitClient(context).retrofitService
+    val bodyProfile = kardexRequestBody()
+    service.getKardex(bodyProfile).enqueue(object : Callback<EnvelopeKardex> {
+        override fun onResponse(call: Call<EnvelopeKardex>, response: Response<EnvelopeKardex>) {
+            if (response.isSuccessful) {
+                val envelope = response.body()
+                if (envelope != null) {
+                    val alumnoResultJson: String? = envelope.bodyKardex?.getAllKardexConPromedioByAlumnoResponse?.getAllKardexConPromedioByAlumnoResult
+                    // Deserializa la cadena JSON
+                    if (alumnoResultJson != null) {
+                        val json = Json { ignoreUnknownKeys = true; coerceInputValues = true }
+                        val kardex: Kardex = json.decodeFromString(alumnoResultJson)
+                        // Imprime las calificaciones en el log
+                        for (kardexItem in kardex.lstKardex) {
+                            Log.d("Kardex", "Clave Materia: ${kardexItem.clvMat}, Clave Oficial Materia: ${kardexItem.clvOfiMat}, Materia: ${kardexItem.materia}, Créditos: ${kardexItem.cdts}, Calificación: ${kardexItem.calif}, Acreditación: ${kardexItem.acred}, Semestre 1: ${kardexItem.s1}, Periodo 1: ${kardexItem.p1}, Año 1: ${kardexItem.a1}, Semestre 2: ${kardexItem.s2}, Periodo 2: ${kardexItem.p2}, Año 2: ${kardexItem.a2}")
+                        }
+
+                        val promedio = kardex.promedio
+                        Log.d("Promedio", "Promedio General: ${promedio.promedioGral}, Créditos Acumulados: ${promedio.cdtsAcum}, Créditos Plan: ${promedio.cdtsPlan}, Materias Cursadas: ${promedio.matCursadas}, Materias Aprobadas: ${promedio.matAprobadas}, Avance Créditos: ${promedio.avanceCdts}")
+                        viewModel.kardex=kardex
+                        //getCargaAcadProfile(context, navController, viewModel)
+                        navController.navigate("kardex")
+                    } else {
+                        showError(context, "La respuesta es nula. No se pudo obtener el kardex.")
+                    }
+                } else {
+                    showError(context, "La respuesta del servidor es nula. No se pudo obtener el kardex.")
+                }
+            } else {
+                showError(context, "Error al obtener el kardex. Código de respuesta: ${response.code()}")
+            }
+        }
+        override fun onFailure(call: Call<EnvelopeKardex>, t: Throwable) {
+            t.printStackTrace()
+            showError(context, "Error en la solicitud del perfil académico")
+            }
+        })
+}
+//
+//private fun obtenerKardex(context: Context, navController: NavController, viewModel: ProfileViewModel) {
+//    val service = RetrofitClient(context).retrofitService
+//    val bodyProfile = kardexRequestBody()
+//    service.getKardex(bodyProfile).enqueue(object : Callback<EnvelopeKardex> {
+//        override fun onResponse(call: Call<EnvelopeKardex>, response: Response<EnvelopeKardex>) {
+//            if (response.isSuccessful) {
+//                val envelope = response.body()
+//                val alumnoResultJson: String? =
+//                    envelope?.bodyKardex?.getAllKardexConPromedioByAlumnoResponse?.getAllKardexConPromedioByAlumnoResult
+//
+//                val json = Json { ignoreUnknownKeys = true }
+//                val alumnoAcademicoResult: Kardex? =
+//                    alumnoResultJson?.let { json.decodeFromString(it) }
+//
+//                Log.w("Exito", "Se obtuvo el perfil 2: ${alumnoAcademicoResult}")
+//                val alumnoAcademicoResultJson = Json.encodeToString(alumnoAcademicoResult)
+//
+//                val addCookiesInterceptor = AddCookiesInterceptor(context)
+//                //addCookiesInterceptor.clearCookies()
+//
+//                viewModel.kardex = alumnoAcademicoResult
+//                navController.navigate("kardex")
+//            } else {
+//                showError(
+//                    context,
+//                    "Error al obtener el perfil académico. Código de respuesta: ${response.code()}"
+//                )
+//            }
+//        }
+//
+//        override fun onFailure(call: Call<EnvelopeKardex>, t: Throwable) {
+//            t.printStackTrace()
+//            showError(context, "Error en la solicitud del perfil académico")
+//        }
+//    })
+//}

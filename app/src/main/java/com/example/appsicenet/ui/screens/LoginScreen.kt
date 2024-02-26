@@ -235,38 +235,7 @@ fun getCalificacionesPorUnidad(xmlString: String): List<CalificacionUnidades> {
     return calificacionesPorUnidad
 }
 
-// Esta función te permitirá obtener el kardex de un alumno
-fun getKardex(xmlString: String): List<Kardex> {
-    val cargaAcademicaResponse = Json.decodeFromString<CargaAcademicaResponse>(xmlString)
-    val cursos = cargaAcademicaResponse.cursos
-    val kardex = mutableListOf<Kardex>()
 
-    cursos.forEach { curso ->
-        // Suponiendo que el estado de la materia indica que es parte del kardex
-        if (curso.estadoMateria == "Kardex") {
-            // Aquí puedes crear una instancia de Kardex con los datos del curso y agregarla a la lista
-            val nuevoKardex = Kardex(
-                semestre1 = "", // Aquí debes obtener el semestre 1 del kardex
-                periodo1 = "", // Aquí debes obtener el periodo 1 del kardex
-                anio1 = "", // Aquí debes obtener el año 1 del kardex
-                semestre2 = "", // Aquí debes obtener el semestre 2 del kardex
-                periodo2 = "", // Aquí debes obtener el periodo 2 del kardex
-                anio2 = "", // Aquí debes obtener el año 2 del kardex
-                semestre3 = "", // Aquí debes obtener el semestre 3 del kardex
-                periodo3 = "", // Aquí debes obtener el periodo 3 del kardex
-                anio3 = "", // Aquí debes obtener el año 3 del kardex
-                claveMateria = curso.claveMateria,
-                claveOficialMateria = curso.claveOficialMateria,
-                materia = curso.materia,
-                creditos = curso.creditosMateria,
-                calificacion = 0, // Puedes dejar la calificación como 0 si no está disponible en este contexto
-                acreditacion = "" // Puedes dejar la acreditación como vacía si no está disponible en este contexto
-            )
-            kardex.add(nuevoKardex)
-        }
-    }
-    return kardex
-}
 
 // Esta función te permitirá obtener la carga académica de un alumno
 fun getCargaAcademica(xmlString: String): List<Curso> {

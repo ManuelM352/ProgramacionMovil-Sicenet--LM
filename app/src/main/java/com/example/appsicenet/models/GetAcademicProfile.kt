@@ -66,7 +66,6 @@ data class GetCalifUnidadesByAlumnoResponse @JvmOverloads constructor(
 
 
 //KARDEX
-
 @Root(name = "Envelope", strict = false)
 data class EnvelopeKardex @JvmOverloads constructor(
     @field:Element(name = "Body", required = false)
@@ -137,64 +136,84 @@ data class CalificacionUnidades(
 )
 
 
-
 @Serializable
-data class Kardex(
-    @SerialName("S1")
-    val semestre1: String?,
-    @SerialName("P1")
-    val periodo1: String?,
-    @SerialName("A1")
-    val anio1: String?,
-    @SerialName("S2")
-    val semestre2: String?,
-    @SerialName("P2")
-    val periodo2: String?,
-    @SerialName("A2")
-    val anio2: String?,
+data class KardexItem(
     @SerialName("S3")
-    val semestre3: String?,
-    @SerialName("P3") val
-    periodo3: String?,
-    @SerialName("A3") val
-    anio3: String?,
+    val s3: String?,
+
+    @SerialName("P3")
+    val p3: String?,
+
+    @SerialName("A3")
+    val a3: String?,
+
     @SerialName("ClvMat")
-    val claveMateria: String,
+    val clvMat: String,
+
     @SerialName("ClvOfiMat")
-    val claveOficialMateria: String,
+    val clvOfiMat: String,
+
     @SerialName("Materia")
     val materia: String,
+
     @SerialName("Cdts")
-    val creditos: Int,
+    val cdts: Int,
+
     @SerialName("Calif")
-    val calificacion: Int,
+    val calif: Int,
+
     @SerialName("Acred")
-    val acreditacion: String
+    val acred: String,
+
+    @SerialName("S1")
+    val s1: String,
+
+    @SerialName("P1")
+    val p1: String,
+
+    @SerialName("A1")
+    val a1: String,
+
+    @SerialName("S2")
+    val s2: String?,
+
+    @SerialName("P2")
+    val p2: String?,
+
+    @SerialName("A2")
+    val a2: String?
 )
 
 @Serializable
 data class Promedio(
     @SerialName("PromedioGral")
-    val promedioGeneral: Double,
+    val promedioGral: Double,
+
     @SerialName("CdtsAcum")
-    val creditosAcumulados: Int,
+    val cdtsAcum: Int,
+
     @SerialName("CdtsPlan")
-    val creditosPlan: Int,
+    val cdtsPlan: Int,
+
     @SerialName("MatCursadas")
-    val materiasCursadas: Int,
+    val matCursadas: Int,
+
     @SerialName("MatAprobadas")
-    val materiasAprobadas: Int,
+    val matAprobadas: Int,
+
     @SerialName("AvanceCdts")
-    val avanceCreditos: Double
+    val avanceCdts: Double
 )
 
 @Serializable
-data class KardexResponse(
+data class Kardex(
     @SerialName("lstKardex")
-    val kardex: List<Kardex>,
+    val lstKardex: List<KardexItem>,
+
     @SerialName("Promedio")
-    val promedio: Promedio
+    val promedio:Promedio
 )
+
 
 
 @Serializable
