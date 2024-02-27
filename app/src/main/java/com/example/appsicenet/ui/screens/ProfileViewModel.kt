@@ -14,6 +14,7 @@ import com.example.appsicenet.data.SicenetRepository
 import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
+import com.example.appsicenet.models.CargaAcademica
 import com.example.appsicenet.models.Kardex
 
 import kotlinx.coroutines.launch
@@ -33,6 +34,8 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
 
     var calificacionesUnidades: List<CalificacionUnidades>? = null
 
+    var cargaAcademica: List<CargaAcademica>? = null
+
     var kardex: Kardex? = null
     var sicenetUiState: SicenetUiState by mutableStateOf(SicenetUiState.Loading)
         private set
@@ -42,6 +45,7 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
         getCalificacionesFinales()
         getCalificacionesUnidades()
         getKardex()
+        getCargaAcademica()
     }
 
     fun getProfile() {
@@ -108,6 +112,21 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
         }
     }
 
+    private fun getCargaAcademica() {
+        viewModelScope.launch {
+            sicenetUiState = SicenetUiState.Loading
+            sicenetUiState = try {
+                val listResult = sicenetRepository.getCargaAcademica()
+                SicenetUiState.Success(
+                    "Success: $listResult"
+                )
+            } catch (e: IOException) {
+                SicenetUiState.Error
+            } catch (e: HttpException) {
+                SicenetUiState.Error
+            }
+        }
+    }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

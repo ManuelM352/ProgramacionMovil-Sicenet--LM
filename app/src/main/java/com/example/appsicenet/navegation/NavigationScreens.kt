@@ -5,4 +5,6 @@ sealed class NavigationScreens (val route: String){
     data object CalifFinalScreen :NavigationScreens("calfFinal")
     data object CalifUnidadesScreen :NavigationScreens("calfUnidades")
     data object KardexScreen :NavigationScreens("kardex")
+    data object CargaAcademica :NavigationScreens("cargaAcademica")
+
 }

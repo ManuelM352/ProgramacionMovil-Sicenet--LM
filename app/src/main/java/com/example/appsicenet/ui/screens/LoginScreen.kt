@@ -43,8 +43,6 @@ import com.example.appsicenet.data.RetrofitClient
 import com.example.appsicenet.models.AccessLoginResponse
 import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.CalificacionUnidades
-import com.example.appsicenet.models.CargaAcademicaResponse
-import com.example.appsicenet.models.Curso
 import com.example.appsicenet.models.Envelope
 import com.example.appsicenet.models.Kardex
 import com.example.appsicenet.models.LoginResult
@@ -206,41 +204,6 @@ private fun getProfile(context: Context, navController: NavController, viewModel
             showError(context, "Error en la solicitud del perfil académico")
         }
     })
-}
-
-
-fun getCalificacionesPorUnidad(xmlString: String): List<CalificacionUnidades> {
-    val cargaAcademicaResponse = Json.decodeFromString<CargaAcademicaResponse>(xmlString)
-    val cursos = cargaAcademicaResponse.cursos
-    val calificacionesPorUnidad = mutableListOf<CalificacionUnidades>()
-
-    cursos.forEach { curso ->
-        // Suponiendo que las calificaciones por unidad están marcadas con un estado especial en el atributo "EstadoMateria"
-        if (curso.estadoMateria == "Unidades") {
-            // Aquí puedes crear una instancia de CalificacionUnidades con los datos del curso y agregarla a la lista
-            val calificacionUnidades = CalificacionUnidades(
-                observaciones = "", // Puedes agregar observaciones si las tienes disponibles
-                c5 = "", // Aquí debes obtener la calificación de la quinta unidad
-                c4 = "", // Aquí debes obtener la calificación de la cuarta unidad
-                c3 = "", // Aquí debes obtener la calificación de la tercera unidad
-                c2 = "", // Aquí debes obtener la calificación de la segunda unidad
-                c1 = "", // Aquí debes obtener la calificación de la primera unidad
-                unidadesActivas = "", // Aquí debes obtener el número de unidades activas
-                materia = curso.materia,
-                grupo = curso.grupo
-            )
-            calificacionesPorUnidad.add(calificacionUnidades)
-        }
-    }
-    return calificacionesPorUnidad
-}
-
-
-
-// Esta función te permitirá obtener la carga académica de un alumno
-fun getCargaAcademica(xmlString: String): List<Curso> {
-    val cargaAcademicaResponse = Json.decodeFromString<CargaAcademicaResponse>(xmlString)
-    return cargaAcademicaResponse.cursos
 }
 
 fun showError(context: Context, message: String) {

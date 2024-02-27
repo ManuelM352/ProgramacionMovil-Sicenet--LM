@@ -85,12 +85,23 @@ data class GetAllKardexConPromedioByAlumnoResponse @JvmOverloads constructor(
 )
 
 
+//CARGA ACADEMICA
+@Root(name = "Envelope", strict = false)
+data class EnvelopeCargaAcademica @JvmOverloads constructor(
+    @field:Element(name = "Body", required = false)
+    var bodyCargaAcademica: BodyCargaAcademica = BodyCargaAcademica()
+)
 
+@Root(name = "Body", strict = false)
+data class BodyCargaAcademica @JvmOverloads constructor(
+    @field:Element(name = "getCargaAcademicaByAlumnoResponse", required = false)
+    var getCargaAcademicaByAlumnoResponse: GetCargaAcademicaByAlumnoResponse = GetCargaAcademicaByAlumnoResponse()
+)
 
-@Root(name = "getCargaAcademicaResponse", strict = false)
-data class GetCargaAcademicaResponse @JvmOverloads constructor(
-    @field:Element(name = "getCargaAcademicaResponse", required = false)
-    var getCargaAcademicaResult: String = ""
+@Root(name = "getCargaAcademicaByAlumnoResponse", strict = false)
+data class GetCargaAcademicaByAlumnoResponse @JvmOverloads constructor(
+    @field:Element(name = "getCargaAcademicaByAlumnoResult", required = false)
+    var getCargaAcademicaByAlumnoResult: String = ""
 )
 
 
@@ -217,7 +228,7 @@ data class Kardex(
 
 
 @Serializable
-data class Curso(
+data class CargaAcademica(
     @SerialName("Semipresencial")
     val semipresencial: String,
     @SerialName("Observaciones")
@@ -245,13 +256,6 @@ data class Curso(
     @SerialName("Materia")
     val materia: String,
     @SerialName("Grupo")
-    val grupo: String,
-    @SerialName("ClaveMateria")
-    val claveMateria: String,
-    @SerialName("ClaveOficialMateria")
-    val claveOficialMateria: String
-)
-@Serializable
-data class CargaAcademicaResponse(
-    @SerialName("getCargaAcademicaResult") val cursos: List<Curso>
+    val grupo: String
+
 )
