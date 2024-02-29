@@ -113,9 +113,9 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
                     ),
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-                ProfileAttribute("Matrícula", attributes.matricula)
-                ProfileAttribute("Carrera", attributes.carrera)
-                ProfileAttribute("Especialidad", attributes.especialidad)
+//                ProfileAttribute("Matrícula", attributes.matricula)
+//                ProfileAttribute("Carrera", attributes.carrera)
+//                ProfileAttribute("Especialidad", attributes.especialidad)
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = {
@@ -295,12 +295,12 @@ private fun getKardexProfile(context: Context, navController: NavController, vie
                         val json = Json { ignoreUnknownKeys = true; coerceInputValues = true }
                         val kardex: Kardex = json.decodeFromString(alumnoResultJson)
                         // Imprime las calificaciones en el log
-                        for (kardexItem in kardex.lstKardex) {
-                            Log.d("Kardex", "Clave Materia: ${kardexItem.clvMat}, Clave Oficial Materia: ${kardexItem.clvOfiMat}, Materia: ${kardexItem.materia}, Créditos: ${kardexItem.cdts}, Calificación: ${kardexItem.calif}, Acreditación: ${kardexItem.acred}, Semestre 1: ${kardexItem.s1}, Periodo 1: ${kardexItem.p1}, Año 1: ${kardexItem.a1}, Semestre 2: ${kardexItem.s2}, Periodo 2: ${kardexItem.p2}, Año 2: ${kardexItem.a2}")
-                        }
+//                        for (kardexItem in kardex.lstKardex) {
+//                            Log.d("Kardex", "Clave Materia: ${kardexItem.clvMat}, Clave Oficial Materia: ${kardexItem.clvOfiMat}, Materia: ${kardexItem.materia}, Créditos: ${kardexItem.cdts}, Calificación: ${kardexItem.calif}, Acreditación: ${kardexItem.acred}, Semestre 1: ${kardexItem.s1}, Periodo 1: ${kardexItem.p1}, Año 1: ${kardexItem.a1}, Semestre 2: ${kardexItem.s2}, Periodo 2: ${kardexItem.p2}, Año 2: ${kardexItem.a2}")
+//                        }
 
                         val promedio = kardex.promedio
-                        Log.d("Promedio", "Promedio General: ${promedio.promedioGral}, Créditos Acumulados: ${promedio.cdtsAcum}, Créditos Plan: ${promedio.cdtsPlan}, Materias Cursadas: ${promedio.matCursadas}, Materias Aprobadas: ${promedio.matAprobadas}, Avance Créditos: ${promedio.avanceCdts}")
+//                        Log.d("Promedio", "Promedio General: ${promedio.promedioGral}, Créditos Acumulados: ${promedio.cdtsAcum}, Créditos Plan: ${promedio.cdtsPlan}, Materias Cursadas: ${promedio.matCursadas}, Materias Aprobadas: ${promedio.matAprobadas}, Avance Créditos: ${promedio.avanceCdts}")
                         viewModel.kardex=kardex
                         //getCargaAcadProfile(context, navController, viewModel)
                         navController.navigate("kardex")

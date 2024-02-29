@@ -11,8 +11,8 @@ fun loginRequestBody(matricula: String, contrasenia: String): RequestBody {
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
           <soap:Body>
             <accesoLogin xmlns="http://tempuri.org/">
-              <strMatricula>s20120179</strMatricula>
-              <strContrasenia>St7-%Kd</strContrasenia>
+              <strMatricula>${matricula}</strMatricula>
+              <strContrasenia>${matricula}</strContrasenia>
               <tipoUsuario>ALUMNO</tipoUsuario>
             </accesoLogin>
           </soap:Body>

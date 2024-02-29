@@ -22,6 +22,29 @@ data class GetAlumnoAcademicoWithLineamientoResponse @JvmOverloads constructor(
     var getAlumnoAcademicoWithLineamientoResult: String = ""
 )
 
+//LOGIN
+
+@Root(name = "Envelope", strict = false)
+data class EnvelopeLogin @JvmOverloads constructor(
+    @field:Element(name = "Body", required = false)
+    var bodyLogin: BodyLogin = BodyLogin()
+)
+
+@Root(name = "Body", strict = false)
+data class BodyLogin @JvmOverloads constructor(
+    @field:Element(name = "accesoLoginResponse", required = false)
+    var accesoLoginResponse: AccesoLoginResponse = AccesoLoginResponse()
+)
+
+@Root(name = "accesoLoginResult", strict = false)
+data class AccesoLoginResponse @JvmOverloads constructor(
+    @field:Element(name = "accesoLoginResult", required = false)
+    var accesoLoginResult: String = ""
+)
+
+
+
+
 //CALIFICACIONES FINALES
 // Clases para la respuesta de calificaciones finales
 @Root(name = "Envelope", strict = false)
@@ -107,122 +130,122 @@ data class GetCargaAcademicaByAlumnoResponse @JvmOverloads constructor(
 
 @Serializable
 data class Attributes(
-    val especialidad: String,
-    val carrera: String,
-    val nombre: String,
-    val matricula:String
+    val especialidad: String? = null,
+    val carrera: String? = null,
+    val nombre: String? = null,
+    val matricula:String? = null
 )
 
 
 @Serializable
 data class CalificacionesFinales(
-    val calif: Int,
-    val acred: String,
-    val grupo: String,
-    val materia: String,
-    val Observaciones: String
+    val calif: Int? = null,
+    val acred: String? = null,
+    val grupo: String? = null,
+    val materia: String? = null,
+    val Observaciones: String? = null
 )
 
 
 @Serializable
 data class CalificacionUnidades(
     @SerialName("Observaciones")
-    val observaciones: String?,
+    val observaciones: String? = null,
     @SerialName("C5")
-    val c5: String?,
+    val c5: String? = null,
     @SerialName("C4")
-    val c4: String?,
+    val c4: String?= null,
     @SerialName("C3")
-    val c3: String?,
+    val c3: String?= null,
     @SerialName("C2")
-    val c2: String?,
+    val c2: String?= null,
     @SerialName("C1")
-    val c1: String?,
+    val c1: String?= null,
     @SerialName("UnidadesActivas")
-    val unidadesActivas: String,
+    val unidadesActivas: String?= null,
     @SerialName("Materia")
-    val materia: String,
+    val materia: String?= null,
     @SerialName("Grupo")
-    val grupo: String
+    val grupo: String?= null
 )
 
 
 @Serializable
 data class KardexItem(
     @SerialName("S3")
-    val s3: String?,
+    val s3: String?= null,
 
     @SerialName("P3")
-    val p3: String?,
+    val p3: String?= null,
 
     @SerialName("A3")
-    val a3: String?,
+    val a3: String?= null,
 
     @SerialName("ClvMat")
-    val clvMat: String,
+    val clvMat: String?= null,
 
     @SerialName("ClvOfiMat")
-    val clvOfiMat: String,
+    val clvOfiMat: String?= null,
 
     @SerialName("Materia")
-    val materia: String,
+    val materia: String?= null,
 
     @SerialName("Cdts")
-    val cdts: Int,
+    val cdts: Int?= null,
 
     @SerialName("Calif")
-    val calif: Int,
+    val calif: Int?= null,
 
     @SerialName("Acred")
-    val acred: String,
+    val acred: String?= null,
 
     @SerialName("S1")
-    val s1: String,
+    val s1: String?= null,
 
     @SerialName("P1")
-    val p1: String,
+    val p1: String?= null,
 
     @SerialName("A1")
-    val a1: String,
+    val a1: String?= null,
 
     @SerialName("S2")
-    val s2: String?,
+    val s2: String?= null,
 
     @SerialName("P2")
-    val p2: String?,
+    val p2: String?= null,
 
     @SerialName("A2")
-    val a2: String?
+    val a2: String? = null
 )
 
 @Serializable
 data class Promedio(
     @SerialName("PromedioGral")
-    val promedioGral: Double,
+    val promedioGral: Double? = null,
 
     @SerialName("CdtsAcum")
-    val cdtsAcum: Int,
+    val cdtsAcum: Int? = null,
 
     @SerialName("CdtsPlan")
-    val cdtsPlan: Int,
+    val cdtsPlan: Int? = null,
 
     @SerialName("MatCursadas")
-    val matCursadas: Int,
+    val matCursadas: Int? = null,
 
     @SerialName("MatAprobadas")
-    val matAprobadas: Int,
+    val matAprobadas: Int? = null,
 
     @SerialName("AvanceCdts")
-    val avanceCdts: Double
+    val avanceCdts: Double? = null
 )
 
 @Serializable
 data class Kardex(
     @SerialName("lstKardex")
-    val lstKardex: List<KardexItem>,
+    val lstKardex: List<KardexItem>? = null,
 
     @SerialName("Promedio")
-    val promedio:Promedio
+    val promedio:Promedio? = null
 )
 
 
@@ -258,4 +281,13 @@ data class CargaAcademica(
     @SerialName("Grupo")
     val grupo: String
 
+)
+
+@Serializable
+data class LoginResult(
+    val acceso: Boolean? = null,
+    val status: String? = null,
+    val user: Int? = null,
+    val contrasenia: String? = null,
+    val matricula: String? = null
 )

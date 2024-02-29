@@ -5,6 +5,7 @@ import com.example.appsicenet.models.EnvelopeCalf
 import com.example.appsicenet.models.EnvelopeCalfUni
 import com.example.appsicenet.models.EnvelopeCargaAcademica
 import com.example.appsicenet.models.EnvelopeKardex
+import com.example.appsicenet.models.EnvelopeLogin
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -19,7 +20,9 @@ interface SICENETApiService {
         "SOAPAction: http://tempuri.org/accesoLogin"
     )
     @POST("/ws/wsalumnos.asmx")
-    fun login(@Body body: RequestBody): Call<ResponseBody>
+    fun login(@Body body: RequestBody): Call<EnvelopeLogin>
+
+
 
     //PERFIL
     @Headers(

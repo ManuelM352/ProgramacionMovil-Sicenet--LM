@@ -40,7 +40,6 @@ import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.appsicenet.data.RetrofitClient
-import com.example.appsicenet.models.AccessLoginResponse
 import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.Envelope
@@ -118,7 +117,8 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
         Spacer(modifier = Modifier.height(32.dp))
         Button(
             onClick = {
-                authenticate(context,matricula, contrasenia, navController, viewModel) },
+                //authenticate(context,matricula, contrasenia, navController, viewModel)
+                },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
@@ -128,52 +128,52 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
     }
 }
 
-
-
-private fun authenticate(context: Context, matricula: String, contrasenia: String,  navController: NavController , viewModel: ProfileViewModel) {
-    val bodyLogin = loginRequestBody(matricula, contrasenia)
-    val service = RetrofitClient(context).retrofitService
-
-    service.login(bodyLogin).enqueue(object : Callback<ResponseBody> {
-        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
-            if (response.isSuccessful) {
-                val service = RetrofitClient(context).retrofitService
-                val bodyProfile = profileRequestBody()
-                service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
-                    override fun onResponse(call: Call<Envelope>, response: Response<Envelope>) {
-                        if (response.isSuccessful) {
-                            val envelope = response.body()
-                            val alumnoResultJson: String? = envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
-
-                            // Deserializa la cadena JSON a AlumnoAcademicoResult
-                            val json = Json { ignoreUnknownKeys = true }
-                            val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
-
-                            Log.w("exito", "se obtuvo el perfil: ${alumnoAcademicoResult}")
-
-                            getProfile(context, navController,viewModel)
-                            
-
-                        } else {
-                            showError(context, "Credenciales invalidas")
-                        }
-                    }
-                    override fun onFailure(call: Call<Envelope>, t: Throwable) {
-                        t.printStackTrace()
-                        showError(context, "Error en la solicitud del perfil académico")
-                    }
-                })
-            } else {
-                showError(context, "Error en la autenticación. Código de respuesta: ${response.code()}")
-            }
-        }
-
-        override fun onFailure(call: Call<ResponseBody>, t: Throwable){
-            t.printStackTrace()
-            showError(context, "Error en la solicitud")
-        }
-    })
-}
+//
+//
+//private fun authenticate(context: Context, matricula: String, contrasenia: String,  navController: NavController , viewModel: ProfileViewModel) {
+//    val bodyLogin = loginRequestBody(matricula, contrasenia)
+//    val service = RetrofitClient(context).retrofitService
+//
+//    service.login(bodyLogin).enqueue(object : Callback<ResponseBody> {
+//        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+//            if (response.isSuccessful) {
+//                val service = RetrofitClient(context).retrofitService
+//                val bodyProfile = profileRequestBody()
+//                service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
+//                    override fun onResponse(call: Call<Envelope>, response: Response<Envelope>) {
+//                        if (response.isSuccessful) {
+//                            val envelope = response.body()
+//                            val alumnoResultJson: String? = envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
+//
+//                            // Deserializa la cadena JSON a AlumnoAcademicoResult
+//                            val json = Json { ignoreUnknownKeys = true }
+//                            val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
+//
+//                            Log.w("exito", "se obtuvo el perfil: ${alumnoAcademicoResult}")
+//
+//                            getProfile(context, navController,viewModel)
+//
+//
+//                        } else {
+//                            showError(context, "Credenciales invalidas")
+//                        }
+//                    }
+//                    override fun onFailure(call: Call<Envelope>, t: Throwable) {
+//                        t.printStackTrace()
+//                        showError(context, "Error en la solicitud del perfil académico")
+//                    }
+//                })
+//            } else {
+//                showError(context, "Error en la autenticación. Código de respuesta: ${response.code()}")
+//            }
+//        }
+//
+//        override fun onFailure(call: Call<ResponseBody>, t: Throwable){
+//            t.printStackTrace()
+//            showError(context, "Error en la solicitud")
+//        }
+//    })
+//}
 
 private fun getProfile(context: Context, navController: NavController, viewModel: ProfileViewModel) {
     val service = RetrofitClient(context).retrofitService
