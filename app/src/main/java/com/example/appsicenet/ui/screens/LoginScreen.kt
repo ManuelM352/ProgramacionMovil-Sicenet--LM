@@ -59,6 +59,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.time.format.TextStyle
+import kotlin.jvm.Throws
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -72,6 +73,8 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
         fontSize = 24.sp, // Tamaño de fuente deseado
         fontWeight = FontWeight.Bold // Peso de la fuente deseado
     )
+    //authenticate(context,matricula, contrasenia, navController, viewModel)
+    navegacionProfile(navController, viewModel)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -118,7 +121,17 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
         Button(
             onClick = {
                 //authenticate(context,matricula, contrasenia, navController, viewModel)
-                },
+                viewModel.matricula = matricula
+                viewModel.contrasenia = contrasenia
+                viewModel.performLoginAndFetchAcademicProfile()
+                if(viewModel.accesoLoginResult?.acceso==true) {
+                    viewModel.getCalificacionesFinales()
+                    viewModel.getCalificacionesUnidades()
+                    viewModel.getKardex()
+                    viewModel.getCargaAcademica()
+                }
+
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
@@ -128,8 +141,24 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
     }
 }
 
-//
-//
+@Composable
+fun navegacionProfile(navController : NavController, viewModel: ProfileViewModel){
+    val context = LocalContext.current
+    when (viewModel.sicenetUiState){
+        SicenetUiState.Loading -> Unit
+        SicenetUiState.Success -> {
+            viewModel.attributes
+            navController.navigate("profile")
+        }
+
+        else -> {
+            showError(context, "Error al obtener el perfil académico.")
+        }
+    }
+}
+
+
+
 //private fun authenticate(context: Context, matricula: String, contrasenia: String,  navController: NavController , viewModel: ProfileViewModel) {
 //    val bodyLogin = loginRequestBody(matricula, contrasenia)
 //    val service = RetrofitClient(context).retrofitService

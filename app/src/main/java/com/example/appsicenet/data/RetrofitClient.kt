@@ -20,51 +20,58 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 interface AppContainer {
     val SicenetRepository : SicenetRepository
+    val itemsRepository: CargaAcademicaRepository
 }
 
 class RetrofitClient(context: Context): AppContainer {
-        private val BASE_URL = "https://sicenet.surguanajuato.tecnm.mx"
-    
+
+    //MANEJO DE REPOSITORY´S
+    override val itemsRepository: CargaAcademicaRepository by lazy {
+        OfflineCargaAcademicaRepository(SicenetDatabase.getDatabase(context).cargaAcademicaDAO())
+    }
+
+    private val BASE_URL = "https://sicenet.surguanajuato.tecnm.mx"
+
     //Obtención de cookies para la obtención de información
     private val client = OkHttpClient.Builder()
-            .addInterceptor(AddCookiesInterceptor(context))
-            .addInterceptor(ReceivedCookiesInterceptor(context))
-            //.addInterceptor(DeleteSessionCookies(context))
-            .addInterceptor(createLoggingInterceptor())
-            .build()
+        .addInterceptor(AddCookiesInterceptor(context))
+        .addInterceptor(ReceivedCookiesInterceptor(context))
+        //.addInterceptor(DeleteSessionCookies(context))
+        .addInterceptor(createLoggingInterceptor())
+        .build()
 
-        private fun createLoggingInterceptor(): Interceptor {
-            return Interceptor { chain ->
-                val request = chain.request()
-                val requestHeaders = request.headers
-                for (i in 0 until requestHeaders.size) {
-                    Log.d("HEADER", "${requestHeaders.name(i)}: ${requestHeaders.value(i)}")
-                }
-                Log.d("Solicitud", "URL: ${request.url}")
-                Log.d("Solicitud", "Método: ${request.method}")
-                Log.d("Solicitud", "Cuerpo: ${request.body}")
-                val response = chain.proceed(request)
-                val responseBody = response.body?.string()
-                Log.d("Respuesta", "Código: ${response.code}")
-                //Log.d("Respuesta", "Cuerpo: ${response.body?.string()}")
-
-                Log.d("Respuesta", "Cuerpo: $responseBody")
-
-                response.newBuilder()
-                    .body(responseBody?.toResponseBody(response.body?.contentType()))
-                    .build()
+    private fun createLoggingInterceptor(): Interceptor {
+        return Interceptor { chain ->
+            val request = chain.request()
+            val requestHeaders = request.headers
+            for (i in 0 until requestHeaders.size) {
+                Log.d("HEADER", "${requestHeaders.name(i)}: ${requestHeaders.value(i)}")
             }
-        }
+            Log.d("Solicitud", "URL: ${request.url}")
+            Log.d("Solicitud", "Método: ${request.method}")
+            Log.d("Solicitud", "Cuerpo: ${request.body}")
+            val response = chain.proceed(request)
+            val responseBody = response.body?.string()
+            Log.d("Respuesta", "Código: ${response.code}")
+            //Log.d("Respuesta", "Cuerpo: ${response.body?.string()}")
 
-        private val retrofit: Retrofit = Retrofit.Builder()
-            .addConverterFactory(SimpleXmlConverterFactory.createNonStrict(Persister(AnnotationStrategy())))
-            .client(client)
-            .baseUrl(BASE_URL)
-            .build()
+            Log.d("Respuesta", "Cuerpo: $responseBody")
 
-        val retrofitService: SICENETApiService by lazy {
-            retrofit.create(SICENETApiService::class.java)
+            response.newBuilder()
+                .body(responseBody?.toResponseBody(response.body?.contentType()))
+                .build()
         }
+    }
+
+    private val retrofit: Retrofit = Retrofit.Builder()
+        .addConverterFactory(SimpleXmlConverterFactory.createNonStrict(Persister(AnnotationStrategy())))
+        .client(client)
+        .baseUrl(BASE_URL)
+        .build()
+
+    val retrofitService: SICENETApiService by lazy {
+        retrofit.create(SICENETApiService::class.java)
+    }
 
     override val SicenetRepository: SicenetRepository by lazy {
         NetworkSicenetRepository(retrofitService)

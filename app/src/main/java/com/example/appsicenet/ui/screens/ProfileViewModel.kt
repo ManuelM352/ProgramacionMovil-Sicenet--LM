@@ -1,5 +1,6 @@
 package com.example.appsicenet.ui.screens
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,6 +12,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.appsicenet.SicenetApplication
 import com.example.appsicenet.data.SicenetRepository
+
 import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
@@ -80,32 +82,26 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
             sicenetUiState = SicenetUiState.Loading
 
             try {
-                // Realizar el login
                 val loginResult = withContext(Dispatchers.IO) {
                     sicenetRepository.getLoginResult(matricula,contrasenia)
                 }
 
-                // Actualizar el estado o manejar el resultado del login según sea necesario
                 accesoLoginResult = loginResult
+                Log.d("Exito", "result${accesoLoginResult}}")
 
-                // Si el login fue exitoso, proceder a obtener el perfil académico
                 if (loginResult is LoginResult) {
                     val academicProfileResult = withContext(Dispatchers.IO) {
                         sicenetRepository.getAcademicProfile()
                     }
-
-                    // Actualizar el estado o manejar el resultado del perfil académico según sea necesario
                     attributes = academicProfileResult
+
                     sicenetUiState = SicenetUiState.Success
                 } else {
-                    // Manejar el caso en que el login no fue exitoso
                     sicenetUiState = SicenetUiState.Error
                 }
             } catch (e: IOException) {
-                // Manejar errores de red u otros
                 sicenetUiState = SicenetUiState.Error
             } catch (e: HttpException) {
-                // Manejar errores HTTP
                 sicenetUiState = SicenetUiState.Error
             }
         }
@@ -131,7 +127,7 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
         }
     }
 
-    private fun getCalificacionesFinales() {
+    fun getCalificacionesFinales() {
         viewModelScope.launch {
             sicenetUiState = SicenetUiState.Loading
             sicenetUiState = try {
@@ -150,7 +146,7 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
         }
     }
 
-    private fun getCalificacionesUnidades() {
+    fun getCalificacionesUnidades() {
         viewModelScope.launch {
             sicenetUiState = SicenetUiState.Loading
             sicenetUiState = try {
@@ -167,7 +163,7 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
         }
     }
 
-    private fun getKardex() {
+    fun getKardex() {
         viewModelScope.launch {
             sicenetUiState = SicenetUiState.Loading
             sicenetUiState = try {
@@ -184,7 +180,7 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
         }
     }
 
-    private fun getCargaAcademica() {
+    fun getCargaAcademica() {
         viewModelScope.launch {
             sicenetUiState = SicenetUiState.Loading
             sicenetUiState = try {
@@ -201,6 +197,8 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
         }
     }
 
+
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
@@ -211,3 +209,5 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
         }
     }
 }
+
+

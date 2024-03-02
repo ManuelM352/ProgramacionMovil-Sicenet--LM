@@ -1,5 +1,7 @@
 package com.example.appsicenet.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.simpleframework.xml.Element
@@ -249,7 +251,7 @@ data class Kardex(
 )
 
 
-
+@Entity(tableName = "cargaAcademica")
 @Serializable
 data class CargaAcademica(
     @SerialName("Semipresencial")
@@ -258,6 +260,7 @@ data class CargaAcademica(
     val observaciones: String,
     @SerialName("Docente")
     val docente: String,
+    @PrimaryKey
     @SerialName("clvOficial")
     val clvOficial: String,
     @SerialName("Sabado")
@@ -280,7 +283,6 @@ data class CargaAcademica(
     val materia: String,
     @SerialName("Grupo")
     val grupo: String
-
 )
 
 @Serializable

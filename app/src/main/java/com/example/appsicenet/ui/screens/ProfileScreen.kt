@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddReaction
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
@@ -79,20 +81,36 @@ import java.time.format.TextStyle
 fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
     val attributes = viewModel.attributes
     val context = LocalContext.current
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Perfil") },
                 actions = {
                     IconButton(onClick = {
+                        viewModel.getCalificacionesUnidades()
                         navController.navigate("calfUnidades")
                     }) {
-                        Icon(Icons.Default.Person, contentDescription = "Login")
+                        Icon(Icons.Default.Person, contentDescription = "CalificacionesUni")
                     }
                     IconButton(onClick = {
-                        getCalificaciones(context, navController,viewModel)
+                        viewModel.getCargaAcademica()
+                        navController.navigate("cargaAcademica")
+
                     }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Perfil")
+                        Icon(Icons.Default.Settings, contentDescription = "CargaAcademica")
+                    }
+                    IconButton(onClick = {
+                        viewModel.getCalificacionesFinales()
+                        navController.navigate("calfFinal")
+                    }) {
+                        Icon(Icons.Default.Add, contentDescription = "CalificacionesFinales")
+                    }
+                    IconButton(onClick = {
+                        viewModel.getKardex()
+                        navController.navigate("kardex")
+                    }) {
+                        Icon(Icons.Default.AddReaction, contentDescription = "Kardex")
                     }
                 }
             )
@@ -107,6 +125,22 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
             ) {
                 Text(
                     text = "${attributes.nombre}",
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Text(
+                    text = "${attributes.carrera}",
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Text(
+                    text = "${attributes.especialidad}",
                     style = androidx.compose.ui.text.TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
@@ -160,43 +194,68 @@ fun ProfileAttribute(label: String, value: String) {
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
+//
+//private fun getCalificaciones(context: Context, navController: NavController, viewModel: ProfileViewModel) {
+//    val service = RetrofitClient(context).retrofitService
+//    val bodyProfile = profileRequestBody()
+//
+//    service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
+//        @Composable
+//        override fun onResponse(call: Call<Envelope>, response: Response<Envelope>) {
+//            if (response.isSuccessful) {
+//                val envelope = response.body()
+//                val alumnoResultJson: String? = envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
+//
+//                // Deserializa la cadena JSON a objeto Attributes
+//                val json = Json { ignoreUnknownKeys = true }
+//                val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
+//
+//                // Verifica si se obtuvieron los datos del alumno
+//                if (alumnoAcademicoResult != null) {
+//                    Log.w("Exito", "Se obtuvieron los datos del alumno: $alumnoAcademicoResult")
+//
+//                    // Ahora, podrías llamar a una función para obtener las calificaciones finales
+//                    //getCalificacionesFinales(context, navController, viewModel)
+//                    //getCalificacionesFinales(context, navController, viewModel)
+//                    //getKardexProfile(context, navController, viewModel)
+//                    viewModel.getCalificacionesFinales()
+//                    //-----------------------------------------------------------------------------------------------------------
+//                    cargaAcademica(navController, viewModel )
+//                //getCargaAcademica(context, navController, viewModel)
+//
+//                } else {
+//                    showError(context, "No se pudieron obtener los datos del alumno.")
+//                }
+//            } else {
+//                showError(context, "Error al obtener los datos del alumno. Código de respuesta: ${response.code()}")
+//            }
+//        }
+//
+//        override fun onFailure(call: Call<Envelope>, t: Throwable) {
+//            t.printStackTrace()
+//            showError(context, "Error en la solicitud de datos del alumno")
+//        }
+//    })
+//}
 
-private fun getCalificaciones(context: Context, navController: NavController, viewModel: ProfileViewModel) {
-    val service = RetrofitClient(context).retrofitService
-    val bodyProfile = profileRequestBody()
 
-    service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
-        override fun onResponse(call: Call<Envelope>, response: Response<Envelope>) {
-            if (response.isSuccessful) {
-                val envelope = response.body()
-                val alumnoResultJson: String? = envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
 
-                // Deserializa la cadena JSON a objeto Attributes
-                val json = Json { ignoreUnknownKeys = true }
-                val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
 
-                // Verifica si se obtuvieron los datos del alumno
-                if (alumnoAcademicoResult != null) {
-                    Log.w("Exito", "Se obtuvieron los datos del alumno: $alumnoAcademicoResult")
+@Composable
+fun cargaAcademica(navController: NavController, viewModel: ProfileViewModel){
 
-                    // Ahora, podrías llamar a una función para obtener las calificaciones finales
-                    //getCalificacionesFinales(context, navController, viewModel)
-                    //getCalificacionesFinales(context, navController, viewModel)
-                    //getKardexProfile(context, navController, viewModel)
-                    getCargaAcademica(context, navController, viewModel)
-                } else {
-                    showError(context, "No se pudieron obtener los datos del alumno.")
-                }
-            } else {
-                showError(context, "Error al obtener los datos del alumno. Código de respuesta: ${response.code()}")
-            }
+    when (viewModel.sicenetUiState){
+        SicenetUiState.Loading -> Unit
+        SicenetUiState.Success -> {
+            viewModel.cargaAcademica
+            navController.navigate("cargaAcademica")
         }
 
-        override fun onFailure(call: Call<Envelope>, t: Throwable) {
-            t.printStackTrace()
-            showError(context, "Error en la solicitud de datos del alumno")
+        else -> {
+            val context = LocalContext.current
+            showError(context, "Error al obtener el perfil académico.")
         }
-    })
+    }
 }
 
 private fun getCalificacionesFinales(context: Context, navController: NavController, viewModel: ProfileViewModel) {
@@ -317,8 +376,8 @@ private fun getKardexProfile(context: Context, navController: NavController, vie
         override fun onFailure(call: Call<EnvelopeKardex>, t: Throwable) {
             t.printStackTrace()
             showError(context, "Error en la solicitud del perfil académico")
-            }
-        })
+        }
+    })
 }
 
 

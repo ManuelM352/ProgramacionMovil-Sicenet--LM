@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.appsicenet.ui.screens.CalfFinalScreen
 import com.example.appsicenet.ui.screens.CalfUniScreen
 import com.example.appsicenet.ui.screens.CargaAcademica
+import com.example.appsicenet.ui.screens.CargaAcademicaViewModel
 import com.example.appsicenet.ui.screens.KardexScreen
 import com.example.appsicenet.ui.screens.LoginScreen
 import com.example.appsicenet.ui.screens.ProfileScreen
@@ -21,18 +22,20 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val viewModel : ProfileViewModel =
         viewModel(factory = ProfileViewModel.Factory)
+    val viewModeld : CargaAcademicaViewModel =
+        viewModel(factory = CargaAcademicaViewModel.Factory)
     NavHost(navController, startDestination = "login") {
         composable("login") {
             LoginScreen(navController = navController, viewModel = viewModel) }
         composable("profile") {
             ProfileScreen(navController = navController, viewModel = viewModel)}
         composable("calfFinal") {
-            CalfFinalScreen(navController = navController, viewModel = viewModel)}
+            CalfFinalScreen(navController = navController, viewModel = viewModel,calificaciones = viewModel.calificacionesFinales)}
         composable("calfUnidades") {
-            CalfUniScreen(navController = navController, viewModel = viewModel)}
+            CalfUniScreen(navController = navController, viewModel = viewModel, calificaciones = viewModel.calificacionesUnidades)}
         composable("kardex") {
             KardexScreen(navController = navController, viewModel = viewModel)}
         composable("cargaAcademica") {
-            CargaAcademica(navController = navController, viewModel = viewModel)}
+            CargaAcademica(navController = navController, viewModel = viewModel, calificaciones = viewModel.cargaAcademica, viewModeld = viewModeld)}
     }
 }
