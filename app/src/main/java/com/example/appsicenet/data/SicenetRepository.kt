@@ -36,7 +36,6 @@ interface SicenetRepository {
     suspend fun getCalificacionesUnidades(): List<CalificacionUnidades>
     suspend fun getKardex(): Kardex
     suspend fun getCargaAcademica(): List<CargaAcademica>
-
     suspend fun getAllCalfFinalFromDatabase(): List<CalificacionesFinales>
 
 

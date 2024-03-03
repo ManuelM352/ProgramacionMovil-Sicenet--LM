@@ -4,13 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/*
-* val calif: Int? = null,
-    val acred: String? = null,
-    val grupo: String? = null,
-    val materia: String? = null,
-    val Observaciones: String? = null
-    */
+
 @Entity(tableName = "calificacionFinal_table")
 data class CargaAcademicaEntities (
     @PrimaryKey(autoGenerate = true)
@@ -33,4 +27,10 @@ data class PerfilEntities (
     @ColumnInfo(name = "matricula") val matricula: String
 )
 
-
+@Entity(tableName = "credentials_table")
+data class Credentials(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")val id: Int = 0,
+    @ColumnInfo(name = "matricula") val matricula: String,
+    @ColumnInfo(name = "contrasenia") val contrasenia: String
+)

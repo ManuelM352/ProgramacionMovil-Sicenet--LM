@@ -75,7 +75,7 @@ class RetrofitClient(context: Context): AppContainer {
 
     override val localDataSource: LocalDataSource by lazy {
         val database = SicenetDatabase.getDatabase(context)
-        LocalDataSource(database.getCalfFinal(), database.getPerfilDao())
+        LocalDataSource(database.getCalfFinal(), database.getPerfilDao(), database.getLogin())
     }
 
 

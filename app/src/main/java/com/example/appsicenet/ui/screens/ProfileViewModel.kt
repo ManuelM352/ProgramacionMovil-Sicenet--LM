@@ -50,8 +50,11 @@ class ProfileViewModel(
 
     var kardex: Kardex? = null
 
-    var matricula : String = ""
-    var contrasenia : String = ""
+
+    var matricula: String? = null
+    var contrasenia: String? = null
+
+
 
     var sicenetUiState: SicenetUiState by mutableStateOf(SicenetUiState.Loading)
         private set
@@ -69,7 +72,7 @@ class ProfileViewModel(
             sicenetUiState = SicenetUiState.Loading
             sicenetUiState = try {
                 val listResult = withContext(Dispatchers.IO){
-                    sicenetRepository.getLoginResult(matricula,contrasenia)
+                    sicenetRepository.getLoginResult(matricula?: "",contrasenia?: "")
                 }
                 accesoLoginResult = listResult
                 SicenetUiState.Success
@@ -87,7 +90,7 @@ class ProfileViewModel(
 
             try {
                 val loginResult = withContext(Dispatchers.IO) {
-                    sicenetRepository.getLoginResult(matricula,contrasenia)
+                    sicenetRepository.getLoginResult(matricula?: "", contrasenia?: "")
                 }
 
                 accesoLoginResult = loginResult
@@ -98,6 +101,9 @@ class ProfileViewModel(
                         sicenetRepository.getAcademicProfile()
                     }
                     attributes = academicProfileResult
+
+                    // Guarda las credenciales si el inicio de sesión fue exitoso
+                    saveCredentialsIfSuccessfulLogin(matricula, contrasenia)
 
                     sicenetUiState = SicenetUiState.Success
                 } else {
@@ -111,7 +117,13 @@ class ProfileViewModel(
         }
     }
 
-
+    private fun saveCredentialsIfSuccessfulLogin(matricula: String?, contrasenia: String?) {
+        if (matricula != null && contrasenia != null) {
+            viewModelScope.launch {
+                localDataSource.saveCredentials(matricula, contrasenia)
+            }
+        }
+    }
 
     fun getProfile() {
         viewModelScope.launch {
