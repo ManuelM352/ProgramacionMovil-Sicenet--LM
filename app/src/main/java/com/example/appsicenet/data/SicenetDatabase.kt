@@ -6,16 +6,16 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [TableCargaAcademica::class], version = 1, exportSchema = false)
-abstract class SicenetDatabase : RoomDatabase(){
+abstract class SicenetDatabasee : RoomDatabase(){
     abstract fun cargaAcademicaDAO(): CargaAcademicaDAO
     companion object {
         @Volatile
-        private var Instance: SicenetDatabase? = null
+        private var Instance: SicenetDatabasee? = null
 
-        fun getDatabase(context: Context): SicenetDatabase {
+        fun getDatabasee(context: Context): SicenetDatabasee {
             // if the Instance is not null, return it, otherwise create a new database instance.
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, SicenetDatabase::class.java, "sicenet-database")
+                Room.databaseBuilder(context, SicenetDatabasee::class.java, "sicenet-database")
                     .build().also { Instance = it }
             }
         }

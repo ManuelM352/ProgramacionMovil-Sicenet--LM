@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.appsicenet.SicenetApplication
 import com.example.appsicenet.data.SicenetRepository
+import com.example.appsicenet.data.database.LocalDataSource
 
 import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.CalificacionUnidades
@@ -32,7 +33,10 @@ sealed interface SicenetUiState {
     object Loading : SicenetUiState
 }
 
-class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewModel() {
+class ProfileViewModel(
+    private val sicenetRepository: SicenetRepository,
+    private val localDataSource: LocalDataSource
+): ViewModel() {
 
     var accesoLoginResult: LoginResult? = null
 
@@ -131,20 +135,26 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
         viewModelScope.launch {
             sicenetUiState = SicenetUiState.Loading
             sicenetUiState = try {
-                val listResult = withContext(Dispatchers.IO){
-                    sicenetRepository.getCalificacionesFinales()
+                val listResult = withContext(Dispatchers.IO) {
+                    val calificaciones = sicenetRepository.getCalificacionesFinales()
+                    localDataSource.insertCalificaciones(calificaciones)
+                    calificaciones
                 }
                 calificacionesFinales = listResult
 
                 SicenetUiState.Success
 
             } catch (e: IOException) {
+                // Si ocurre un error, intenta obtener los datos de la base de datos local
+                calificacionesFinales = localDataSource.getAllCalificaciones()
                 SicenetUiState.Error
             } catch (e: HttpException) {
+                calificacionesFinales = localDataSource.getAllCalificaciones()
                 SicenetUiState.Error
             }
         }
     }
+
 
     fun getCalificacionesUnidades() {
         viewModelScope.launch {
@@ -197,15 +207,28 @@ class ProfileViewModel(private val sicenetRepository: SicenetRepository): ViewMo
         }
     }
 
-
-
+    fun saveCalificacionesFinales(calificaciones: List<CalificacionesFinales>) {
+        viewModelScope.launch {
+            // Verificar si las calificaciones ya existen en la base de datos local
+            val existingCalificaciones = localDataSource.getAllCalificaciones()
+            if (existingCalificaciones.isEmpty()) {
+                // Si no existen, guardar las calificaciones finales en la base de datos local
+                localDataSource.insertCalificaciones(calificaciones)
+            } else {
+                // Si existen, no hacer nada
+                Log.d("ProfileViewModel", "Las calificaciones ya existen en la base de datos local")
+            }
+        }
+    }
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as SicenetApplication)
                 val sicenetRepository = application.container.SicenetRepository
-                ProfileViewModel(sicenetRepository = sicenetRepository)
+                val localDataSource = application.container.localDataSource
+                ProfileViewModel(sicenetRepository = sicenetRepository, localDataSource = localDataSource)
             }
+
         }
     }
 }

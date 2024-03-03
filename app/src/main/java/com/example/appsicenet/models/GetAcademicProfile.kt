@@ -251,7 +251,7 @@ data class Kardex(
 )
 
 
-@Entity(tableName = "cargaAcademica")
+
 @Serializable
 data class CargaAcademica(
     @SerialName("Semipresencial")
@@ -260,7 +260,6 @@ data class CargaAcademica(
     val observaciones: String,
     @SerialName("Docente")
     val docente: String,
-    @PrimaryKey
     @SerialName("clvOficial")
     val clvOficial: String,
     @SerialName("Sabado")
@@ -292,4 +291,25 @@ data class LoginResult(
     val user: Int? = null,
     val contrasenia: String? = null,
     val matricula: String? = null
+)
+
+
+@Entity(tableName = "carga_academica")
+data class CargaAcademicaEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0L,
+    val semipresencial: String,
+    val observaciones: String,
+    val docente: String,
+    val clvOficial: String,
+    val sabado: String,
+    val viernes: String,
+    val jueves: String,
+    val miercoles: String,
+    val martes: String,
+    val lunes: String,
+    val estadoMateria: String,
+    val creditosMateria: Int,
+    val materia: String,
+    val grupo: String
 )

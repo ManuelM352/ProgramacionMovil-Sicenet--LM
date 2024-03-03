@@ -28,14 +28,14 @@ import com.example.appsicenet.ui.screens.ProfileViewModel
 /**
  * Provides Factory to create instance of ViewModel for the entire Inventory app
  */
-object AppViewModelProvider {
-    val Factory = viewModelFactory {
-        // Initializer for ItemEntryViewModel
-        initializer {
-            CargaAcademicaViewModel(inventoryApplication().container.itemsRepository)
-        }
-    }
-}
+//object AppViewModelProvider {
+//    val Factory = viewModelFactory {
+//        // Initializer for ItemEntryViewModel
+//        initializer {
+//            CargaAcademicaViewModel(inventoryApplication().container.itemsRepository)
+//        }
+//    }
+//}
 
 /**
  * Extension function to queries for [Application] object and returns an instance of

@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface CargaAcademicaDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(item: TableCargaAcademica)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(items: List<TableCargaAcademica>)
+    
     @Update
     suspend fun update(item: TableCargaAcademica)
 

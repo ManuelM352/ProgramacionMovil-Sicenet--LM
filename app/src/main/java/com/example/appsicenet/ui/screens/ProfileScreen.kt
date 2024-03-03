@@ -257,40 +257,40 @@ fun cargaAcademica(navController: NavController, viewModel: ProfileViewModel){
         }
     }
 }
-
-private fun getCalificacionesFinales(context: Context, navController: NavController, viewModel: ProfileViewModel) {
-    val service = RetrofitClient(context).retrofitService
-    val bodyCalificaciones = califfinalRequestBody() // Asume que ya tienes esta función
-
-    service.getCalifFinal(bodyCalificaciones).enqueue(object : Callback<EnvelopeCalf> {
-        override fun onResponse(call: Call<EnvelopeCalf>, response: Response<EnvelopeCalf>) {
-            if (response.isSuccessful) {
-                val calificacionesEnvelope = response.body()
-                val alumnoResultJson: String? = calificacionesEnvelope?.bodyCalf?.getAllCalifFinalByAlumnosResponse?.getAllCalifFinalByAlumnosResult
-
-                Log.w("Exito", " ${alumnoResultJson}")
-
-                // Aquí puedes manejar la respuesta de las calificaciones finales
-                if (alumnoResultJson != null) {
-                    /// Llamar al método para procesar las calificaciones y actualizar el ViewModel
-                    val calificaciones = parseCalificacionesFinales(calificacionesEnvelope)
-                    viewModel.calificacionesFinales = calificaciones // Asigna la lista de calificaciones al ViewModel
-                    // Navega a la pantalla de calificaciones finales
-                    navController.navigate("calfFinal")
-                } else {
-                    showError(context, "No se pudieron obtener las calificaciones finales.")
-                }
-            } else {
-                showError(context, "Error al obtener las calificaciones finales. Código de respuesta: ${response.code()}")
-            }
-        }
-
-        override fun onFailure(call: Call<EnvelopeCalf>, t: Throwable) {
-            t.printStackTrace()
-            showError(context, "Error en la solicitud de las calificaciones finales")
-        }
-    })
-}
+//
+//private fun getCalificacionesFinales(context: Context, navController: NavController, viewModel: ProfileViewModel) {
+//    val service = RetrofitClient(context).retrofitService
+//    val bodyCalificaciones = califfinalRequestBody() // Asume que ya tienes esta función
+//
+//    service.getCalifFinal(bodyCalificaciones).enqueue(object : Callback<EnvelopeCalf> {
+//        override fun onResponse(call: Call<EnvelopeCalf>, response: Response<EnvelopeCalf>) {
+//            if (response.isSuccessful) {
+//                val calificacionesEnvelope = response.body()
+//                val alumnoResultJson: String? = calificacionesEnvelope?.bodyCalf?.getAllCalifFinalByAlumnosResponse?.getAllCalifFinalByAlumnosResult
+//
+//                Log.w("Exito", " ${alumnoResultJson}")
+//
+//                // Aquí puedes manejar la respuesta de las calificaciones finales
+//                if (alumnoResultJson != null) {
+//                    /// Llamar al método para procesar las calificaciones y actualizar el ViewModel
+//                    val calificaciones = parseCalificacionesFinales(calificacionesEnvelope)
+//                    viewModel.calificacionesFinales = calificaciones // Asigna la lista de calificaciones al ViewModel
+//                    // Navega a la pantalla de calificaciones finales
+//                    navController.navigate("calfFinal")
+//                } else {
+//                    showError(context, "No se pudieron obtener las calificaciones finales.")
+//                }
+//            } else {
+//                showError(context, "Error al obtener las calificaciones finales. Código de respuesta: ${response.code()}")
+//            }
+//        }
+//
+//        override fun onFailure(call: Call<EnvelopeCalf>, t: Throwable) {
+//            t.printStackTrace()
+//            showError(context, "Error en la solicitud de las calificaciones finales")
+//        }
+//    })
+//}
 
 fun parseCalificacionesFinales(envelope: EnvelopeCalf): List<CalificacionesFinales> {
     val resultJson = envelope.bodyCalf.getAllCalifFinalByAlumnosResponse.getAllCalifFinalByAlumnosResult
@@ -298,125 +298,125 @@ fun parseCalificacionesFinales(envelope: EnvelopeCalf): List<CalificacionesFinal
     return json.decodeFromString(resultJson)
 }
 
-
-private fun getCalificacionesUnidades(context: Context, navController: NavController, viewModel: ProfileViewModel) {
-    val service = RetrofitClient(context).retrofitService
-    val bodyCalificaciones = califUnidadesRequestBody() // Asume que ya tienes esta función
-
-    service.getCalifUnidades(bodyCalificaciones).enqueue(object : Callback<EnvelopeCalfUni> {
-        override fun onResponse(call: Call<EnvelopeCalfUni>, response: Response<EnvelopeCalfUni>) {
-            if (response.isSuccessful) {
-                val calificacionesEnvelope = response.body()
-                val alumnoResultJson: String? = calificacionesEnvelope?.bodyCalfUni?.getCalifUnidadesByAlumnoResponse?.getCalifUnidadesByAlumnoResult
-
-                Log.w("Exito", " ${alumnoResultJson}")
-
-                // Aquí puedes manejar la respuesta de las calificaciones finales
-                if (alumnoResultJson != null) {
-                    /// Llamar al método para procesar las calificaciones y actualizar el ViewModel
-                    val calificaciones = parseCalificacionesUnidades(calificacionesEnvelope)
-                    viewModel.calificacionesUnidades = calificaciones // Asigna la lista de calificaciones al ViewModel
-                    // Navega a la pantalla de calificaciones finales
-                    navController.navigate("calfUnidades")
-                } else {
-                    showError(context, "No se pudieron obtener las calificaciones.")
-                }
-            } else {
-                showError(context, "Error al obtener las calificaciones. Código de respuesta: ${response.code()}")
-            }
-        }
-
-        override fun onFailure(call: Call<EnvelopeCalfUni>, t: Throwable) {
-            t.printStackTrace()
-            showError(context, "Error en la solicitud de las calificaciones")
-        }
-    })
-}
-
-fun parseCalificacionesUnidades(envelope: EnvelopeCalfUni): List<CalificacionUnidades> {
-    val resultJson = envelope.bodyCalfUni.getCalifUnidadesByAlumnoResponse.getCalifUnidadesByAlumnoResult
-    val json = Json { ignoreUnknownKeys = true } // Configura el parser para ignorar claves desconocidas
-    return json.decodeFromString(resultJson)
-}
-
-
-private fun getKardexProfile(context: Context, navController: NavController, viewModel: ProfileViewModel) {
-    val service = RetrofitClient(context).retrofitService
-    val bodyProfile = kardexRequestBody()
-    service.getKardex(bodyProfile).enqueue(object : Callback<EnvelopeKardex> {
-        override fun onResponse(call: Call<EnvelopeKardex>, response: Response<EnvelopeKardex>) {
-            if (response.isSuccessful) {
-                val envelope = response.body()
-                if (envelope != null) {
-                    val alumnoResultJson: String? = envelope.bodyKardex?.getAllKardexConPromedioByAlumnoResponse?.getAllKardexConPromedioByAlumnoResult
-                    // Deserializa la cadena JSON
-                    if (alumnoResultJson != null) {
-                        val json = Json { ignoreUnknownKeys = true; coerceInputValues = true }
-                        val kardex: Kardex = json.decodeFromString(alumnoResultJson)
-                        // Imprime las calificaciones en el log
-//                        for (kardexItem in kardex.lstKardex) {
-//                            Log.d("Kardex", "Clave Materia: ${kardexItem.clvMat}, Clave Oficial Materia: ${kardexItem.clvOfiMat}, Materia: ${kardexItem.materia}, Créditos: ${kardexItem.cdts}, Calificación: ${kardexItem.calif}, Acreditación: ${kardexItem.acred}, Semestre 1: ${kardexItem.s1}, Periodo 1: ${kardexItem.p1}, Año 1: ${kardexItem.a1}, Semestre 2: ${kardexItem.s2}, Periodo 2: ${kardexItem.p2}, Año 2: ${kardexItem.a2}")
-//                        }
-
-                        val promedio = kardex.promedio
-//                        Log.d("Promedio", "Promedio General: ${promedio.promedioGral}, Créditos Acumulados: ${promedio.cdtsAcum}, Créditos Plan: ${promedio.cdtsPlan}, Materias Cursadas: ${promedio.matCursadas}, Materias Aprobadas: ${promedio.matAprobadas}, Avance Créditos: ${promedio.avanceCdts}")
-                        viewModel.kardex=kardex
-                        //getCargaAcadProfile(context, navController, viewModel)
-                        navController.navigate("kardex")
-                    } else {
-                        showError(context, "La respuesta es nula. No se pudo obtener el kardex.")
-                    }
-                } else {
-                    showError(context, "La respuesta del servidor es nula. No se pudo obtener el kardex.")
-                }
-            } else {
-                showError(context, "Error al obtener el kardex. Código de respuesta: ${response.code()}")
-            }
-        }
-        override fun onFailure(call: Call<EnvelopeKardex>, t: Throwable) {
-            t.printStackTrace()
-            showError(context, "Error en la solicitud del perfil académico")
-        }
-    })
-}
-
-
-private fun getCargaAcademica(context: Context, navController: NavController, viewModel: ProfileViewModel) {
-    val service = RetrofitClient(context).retrofitService
-    val bodyCalificaciones = cargaAcademicaRequestBody() // Asume que ya tienes esta función
-
-    service.getCargaAcademica(bodyCalificaciones).enqueue(object : Callback<EnvelopeCargaAcademica> {
-        override fun onResponse(call: Call<EnvelopeCargaAcademica>, response: Response<EnvelopeCargaAcademica>) {
-            if (response.isSuccessful) {
-                val calificacionesEnvelope = response.body()
-                val alumnoResultJson: String? = calificacionesEnvelope?.bodyCargaAcademica?.getCargaAcademicaByAlumnoResponse?.getCargaAcademicaByAlumnoResult
-
-                Log.w("Exito", " ${alumnoResultJson}")
-
-                // Aquí puedes manejar la respuesta de las calificaciones finales
-                if (alumnoResultJson != null) {
-                    /// Llamar al método para procesar las calificaciones y actualizar el ViewModel
-                    val calificaciones = parseCargaAcademica(calificacionesEnvelope)
-                    viewModel.cargaAcademica = calificaciones // Asigna la lista de calificaciones al ViewModel
-                    // Navega a la pantalla de calificaciones finales
-                    navController.navigate("cargaAcademica")
-                } else {
-                    showError(context, "No se pudieron obtener las calificaciones.")
-                }
-            } else {
-                showError(context, "Error al obtener las calificaciones. Código de respuesta: ${response.code()}")
-            }
-        }
-
-        override fun onFailure(call: Call<EnvelopeCargaAcademica>, t: Throwable) {
-            t.printStackTrace()
-            showError(context, "Error en la solicitud de las calificaciones")
-        }
-    })
-}
-
-fun parseCargaAcademica(envelope: EnvelopeCargaAcademica): List<CargaAcademica> {
-    val resultJson = envelope.bodyCargaAcademica.getCargaAcademicaByAlumnoResponse.getCargaAcademicaByAlumnoResult
-    val json = Json { ignoreUnknownKeys = true } // Configura el parser para ignorar claves desconocidas
-    return json.decodeFromString(resultJson)
-}
+//
+//private fun getCalificacionesUnidades(context: Context, navController: NavController, viewModel: ProfileViewModel) {
+//    val service = RetrofitClient(context).retrofitService
+//    val bodyCalificaciones = califUnidadesRequestBody() // Asume que ya tienes esta función
+//
+//    service.getCalifUnidades(bodyCalificaciones).enqueue(object : Callback<EnvelopeCalfUni> {
+//        override fun onResponse(call: Call<EnvelopeCalfUni>, response: Response<EnvelopeCalfUni>) {
+//            if (response.isSuccessful) {
+//                val calificacionesEnvelope = response.body()
+//                val alumnoResultJson: String? = calificacionesEnvelope?.bodyCalfUni?.getCalifUnidadesByAlumnoResponse?.getCalifUnidadesByAlumnoResult
+//
+//                Log.w("Exito", " ${alumnoResultJson}")
+//
+//                // Aquí puedes manejar la respuesta de las calificaciones finales
+//                if (alumnoResultJson != null) {
+//                    /// Llamar al método para procesar las calificaciones y actualizar el ViewModel
+//                    val calificaciones = parseCalificacionesUnidades(calificacionesEnvelope)
+//                    viewModel.calificacionesUnidades = calificaciones // Asigna la lista de calificaciones al ViewModel
+//                    // Navega a la pantalla de calificaciones finales
+//                    navController.navigate("calfUnidades")
+//                } else {
+//                    showError(context, "No se pudieron obtener las calificaciones.")
+//                }
+//            } else {
+//                showError(context, "Error al obtener las calificaciones. Código de respuesta: ${response.code()}")
+//            }
+//        }
+//
+//        override fun onFailure(call: Call<EnvelopeCalfUni>, t: Throwable) {
+//            t.printStackTrace()
+//            showError(context, "Error en la solicitud de las calificaciones")
+//        }
+//    })
+//}
+//
+//fun parseCalificacionesUnidades(envelope: EnvelopeCalfUni): List<CalificacionUnidades> {
+//    val resultJson = envelope.bodyCalfUni.getCalifUnidadesByAlumnoResponse.getCalifUnidadesByAlumnoResult
+//    val json = Json { ignoreUnknownKeys = true } // Configura el parser para ignorar claves desconocidas
+//    return json.decodeFromString(resultJson)
+//}
+//
+//
+//private fun getKardexProfile(context: Context, navController: NavController, viewModel: ProfileViewModel) {
+//    val service = RetrofitClient(context).retrofitService
+//    val bodyProfile = kardexRequestBody()
+//    service.getKardex(bodyProfile).enqueue(object : Callback<EnvelopeKardex> {
+//        override fun onResponse(call: Call<EnvelopeKardex>, response: Response<EnvelopeKardex>) {
+//            if (response.isSuccessful) {
+//                val envelope = response.body()
+//                if (envelope != null) {
+//                    val alumnoResultJson: String? = envelope.bodyKardex?.getAllKardexConPromedioByAlumnoResponse?.getAllKardexConPromedioByAlumnoResult
+//                    // Deserializa la cadena JSON
+//                    if (alumnoResultJson != null) {
+//                        val json = Json { ignoreUnknownKeys = true; coerceInputValues = true }
+//                        val kardex: Kardex = json.decodeFromString(alumnoResultJson)
+//                        // Imprime las calificaciones en el log
+////                        for (kardexItem in kardex.lstKardex) {
+////                            Log.d("Kardex", "Clave Materia: ${kardexItem.clvMat}, Clave Oficial Materia: ${kardexItem.clvOfiMat}, Materia: ${kardexItem.materia}, Créditos: ${kardexItem.cdts}, Calificación: ${kardexItem.calif}, Acreditación: ${kardexItem.acred}, Semestre 1: ${kardexItem.s1}, Periodo 1: ${kardexItem.p1}, Año 1: ${kardexItem.a1}, Semestre 2: ${kardexItem.s2}, Periodo 2: ${kardexItem.p2}, Año 2: ${kardexItem.a2}")
+////                        }
+//
+//                        val promedio = kardex.promedio
+////                        Log.d("Promedio", "Promedio General: ${promedio.promedioGral}, Créditos Acumulados: ${promedio.cdtsAcum}, Créditos Plan: ${promedio.cdtsPlan}, Materias Cursadas: ${promedio.matCursadas}, Materias Aprobadas: ${promedio.matAprobadas}, Avance Créditos: ${promedio.avanceCdts}")
+//                        viewModel.kardex=kardex
+//                        //getCargaAcadProfile(context, navController, viewModel)
+//                        navController.navigate("kardex")
+//                    } else {
+//                        showError(context, "La respuesta es nula. No se pudo obtener el kardex.")
+//                    }
+//                } else {
+//                    showError(context, "La respuesta del servidor es nula. No se pudo obtener el kardex.")
+//                }
+//            } else {
+//                showError(context, "Error al obtener el kardex. Código de respuesta: ${response.code()}")
+//            }
+//        }
+//        override fun onFailure(call: Call<EnvelopeKardex>, t: Throwable) {
+//            t.printStackTrace()
+//            showError(context, "Error en la solicitud del perfil académico")
+//        }
+//    })
+//}
+//
+//
+//private fun getCargaAcademica(context: Context, navController: NavController, viewModel: ProfileViewModel) {
+//    val service = RetrofitClient(context).retrofitService
+//    val bodyCalificaciones = cargaAcademicaRequestBody() // Asume que ya tienes esta función
+//
+//    service.getCargaAcademica(bodyCalificaciones).enqueue(object : Callback<EnvelopeCargaAcademica> {
+//        override fun onResponse(call: Call<EnvelopeCargaAcademica>, response: Response<EnvelopeCargaAcademica>) {
+//            if (response.isSuccessful) {
+//                val calificacionesEnvelope = response.body()
+//                val alumnoResultJson: String? = calificacionesEnvelope?.bodyCargaAcademica?.getCargaAcademicaByAlumnoResponse?.getCargaAcademicaByAlumnoResult
+//
+//                Log.w("Exito", " ${alumnoResultJson}")
+//
+//                // Aquí puedes manejar la respuesta de las calificaciones finales
+//                if (alumnoResultJson != null) {
+//                    /// Llamar al método para procesar las calificaciones y actualizar el ViewModel
+//                    val calificaciones = parseCargaAcademica(calificacionesEnvelope)
+//                    viewModel.cargaAcademica = calificaciones // Asigna la lista de calificaciones al ViewModel
+//                    // Navega a la pantalla de calificaciones finales
+//                    navController.navigate("cargaAcademica")
+//                } else {
+//                    showError(context, "No se pudieron obtener las calificaciones.")
+//                }
+//            } else {
+//                showError(context, "Error al obtener las calificaciones. Código de respuesta: ${response.code()}")
+//            }
+//        }
+//
+//        override fun onFailure(call: Call<EnvelopeCargaAcademica>, t: Throwable) {
+//            t.printStackTrace()
+//            showError(context, "Error en la solicitud de las calificaciones")
+//        }
+//    })
+//}
+//
+//fun parseCargaAcademica(envelope: EnvelopeCargaAcademica): List<CargaAcademica> {
+//    val resultJson = envelope.bodyCargaAcademica.getCargaAcademicaByAlumnoResponse.getCargaAcademicaByAlumnoResult
+//    val json = Json { ignoreUnknownKeys = true } // Configura el parser para ignorar claves desconocidas
+//    return json.decodeFromString(resultJson)
+//}

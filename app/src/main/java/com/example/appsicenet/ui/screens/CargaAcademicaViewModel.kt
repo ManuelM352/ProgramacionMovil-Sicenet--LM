@@ -33,15 +33,15 @@ class CargaAcademicaViewModel (private val itemsRepository: CargaAcademicaReposi
     }
 
 
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as SicenetApplication)
-                val cargaAcademicaRepository = application.container.itemsRepository
-                CargaAcademicaViewModel(itemsRepository = cargaAcademicaRepository)
-            }
-        }
-    }
+//    companion object {
+//        val Factory: ViewModelProvider.Factory = viewModelFactory {
+//            initializer {
+//                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as SicenetApplication)
+//                val cargaAcademicaRepository = application.container.itemsRepository
+//                CargaAcademicaViewModel(itemsRepository = cargaAcademicaRepository)
+//            }
+//        }
+//    }
 }
 
 /**

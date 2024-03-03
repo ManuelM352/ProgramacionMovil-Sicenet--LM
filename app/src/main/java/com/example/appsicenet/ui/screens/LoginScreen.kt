@@ -203,37 +203,37 @@ fun navegacionProfile(navController : NavController, viewModel: ProfileViewModel
 //        }
 //    })
 //}
-
-private fun getProfile(context: Context, navController: NavController, viewModel: ProfileViewModel) {
-    val service = RetrofitClient(context).retrofitService
-    val bodyProfile = profileRequestBody()
-    service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
-        override fun onResponse(call: Call<Envelope>, response: Response<Envelope>) {
-            if (response.isSuccessful) {
-                val envelope = response.body()
-                val alumnoResultJson: String? = envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
-
-                val json = Json { ignoreUnknownKeys = true }
-                val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
-
-                Log.w("Exito", "Se obtuvo el perfil 2: ${alumnoAcademicoResult}")
-                val alumnoAcademicoResultJson = Json.encodeToString(alumnoAcademicoResult)
-
-                val addCookiesInterceptor = AddCookiesInterceptor(context)
-                //addCookiesInterceptor.clearCookies()
-
-                viewModel.attributes=alumnoAcademicoResult
-                navController.navigate("profile")
-            } else {
-                showError(context, "Error al obtener el perfil académico. Código de respuesta: ${response.code()}")
-            }
-        }
-        override fun onFailure(call: Call<Envelope>, t: Throwable) {
-            t.printStackTrace()
-            showError(context, "Error en la solicitud del perfil académico")
-        }
-    })
-}
+//
+//private fun getProfile(context: Context, navController: NavController, viewModel: ProfileViewModel) {
+//    val service = RetrofitClient(context).retrofitService
+//    val bodyProfile = profileRequestBody()
+//    service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
+//        override fun onResponse(call: Call<Envelope>, response: Response<Envelope>) {
+//            if (response.isSuccessful) {
+//                val envelope = response.body()
+//                val alumnoResultJson: String? = envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
+//
+//                val json = Json { ignoreUnknownKeys = true }
+//                val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
+//
+//                Log.w("Exito", "Se obtuvo el perfil 2: ${alumnoAcademicoResult}")
+//                val alumnoAcademicoResultJson = Json.encodeToString(alumnoAcademicoResult)
+//
+//                val addCookiesInterceptor = AddCookiesInterceptor(context)
+//                //addCookiesInterceptor.clearCookies()
+//
+//                viewModel.attributes=alumnoAcademicoResult
+//                navController.navigate("profile")
+//            } else {
+//                showError(context, "Error al obtener el perfil académico. Código de respuesta: ${response.code()}")
+//            }
+//        }
+//        override fun onFailure(call: Call<Envelope>, t: Throwable) {
+//            t.printStackTrace()
+//            showError(context, "Error en la solicitud del perfil académico")
+//        }
+//    })
+//}
 
 fun showError(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()

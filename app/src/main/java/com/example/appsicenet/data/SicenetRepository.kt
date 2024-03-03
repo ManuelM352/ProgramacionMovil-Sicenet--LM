@@ -1,20 +1,13 @@
 package com.example.appsicenet.data
 
 
-import android.content.Context
-import android.util.Log
-import android.widget.Toast
-import androidx.navigation.NavController
-import com.example.appsicenet.models.AccesoLoginResponse
+import com.example.appsicenet.data.database.LocalDataSource
+import com.example.appsicenet.data.database.dao.SicenetDao
+import com.example.appsicenet.data.database.entities.SicenetEntities
 import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.CargaAcademica
-import com.example.appsicenet.models.Envelope
-import com.example.appsicenet.models.EnvelopeCalf
-import com.example.appsicenet.models.EnvelopeCalfUni
-import com.example.appsicenet.models.EnvelopeCargaAcademica
-import com.example.appsicenet.models.EnvelopeKardex
 import com.example.appsicenet.models.Kardex
 import com.example.appsicenet.models.LoginResult
 import com.example.appsicenet.network.AddCookiesInterceptor
@@ -55,12 +48,14 @@ interface SicenetRepository {
     suspend fun getKardex(): Kardex
     suspend fun getCargaAcademica(): List<CargaAcademica>
 
+    suspend fun getAllCalfFinalFromDatabase(): List<CalificacionesFinales>
 
 
 }
 
 class NetworkSicenetRepository(
-    private val sicenetApiService: SICENETApiService
+    private val sicenetApiService: SICENETApiService,
+    private val localDataSource: LocalDataSource
 ) : SicenetRepository {
     override suspend fun getLoginResult(matricula: String, contrasenia: String): LoginResult {
         val response = sicenetApiService.login(loginRequestBody(matricula, contrasenia)).execute()
@@ -99,15 +94,21 @@ class NetworkSicenetRepository(
             val alumnoResultJson: String? =
                 envelope?.bodyCalf?.getAllCalifFinalByAlumnosResponse?.getAllCalifFinalByAlumnosResult
             val json = Json { ignoreUnknownKeys = true; coerceInputValues = true }
-
-
-//            return alumnoResultJson?.let { json.decodeFromString<List<CargaAcademica>>(it) }
             val carga: List<CalificacionesFinales> = json.decodeFromString(alumnoResultJson ?: "")
+
+            // Guardar los datos en la base de datos local
+            localDataSource.insertCalificaciones(carga)
+
             return carga
         } else {
             throw IOException("Error en la obtencion del perfil código: ${response.code()}")
         }
     }
+
+    override suspend fun getAllCalfFinalFromDatabase(): List<CalificacionesFinales> {
+        return localDataSource.getAllCalificaciones()
+    }
+
 
     override suspend fun getCalificacionesUnidades(): List<CalificacionUnidades> {
         val response = sicenetApiService.getCalifUnidades(califUnidadesRequestBody()).execute()
@@ -152,15 +153,16 @@ class NetworkSicenetRepository(
                 envelope?.bodyCargaAcademica?.getCargaAcademicaByAlumnoResponse?.getCargaAcademicaByAlumnoResult
             val json = Json { ignoreUnknownKeys = true; coerceInputValues = true }
 
-
 //            return alumnoResultJson?.let { json.decodeFromString<List<CargaAcademica>>(it) }
             val carga: List<CargaAcademica> = json.decodeFromString(alumnoResultJson ?: "")
+            
             return carga
             // Devuelve una lista vacía si el JSON es nulo
         } else {
             throw IOException("Error en la obtencion del perfil código: ${response.code()}")
         }
     }
+
 
 }
 //override suspend fun getAcademicProfile(): Call<Envelope> = sicenetApiService.getAcademicProfile(profileRequestBody())

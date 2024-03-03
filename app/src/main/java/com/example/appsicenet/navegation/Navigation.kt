@@ -22,8 +22,8 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val viewModel : ProfileViewModel =
         viewModel(factory = ProfileViewModel.Factory)
-    val viewModeld : CargaAcademicaViewModel =
-        viewModel(factory = CargaAcademicaViewModel.Factory)
+//    val viewModeld : CargaAcademicaViewModel =
+//        viewModel(factory = CargaAcademicaViewModel.Factory)
     NavHost(navController, startDestination = "login") {
         composable("login") {
             LoginScreen(navController = navController, viewModel = viewModel) }
@@ -36,6 +36,6 @@ fun AppNavigation() {
         composable("kardex") {
             KardexScreen(navController = navController, viewModel = viewModel)}
         composable("cargaAcademica") {
-            CargaAcademica(navController = navController, viewModel = viewModel, calificaciones = viewModel.cargaAcademica, viewModeld = viewModeld)}
+            CargaAcademica(navController = navController, viewModel = viewModel, calificaciones = viewModel.cargaAcademica)}
     }
 }

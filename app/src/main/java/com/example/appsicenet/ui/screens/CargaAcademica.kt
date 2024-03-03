@@ -29,7 +29,7 @@ import kotlin.math.log
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CargaAcademica(navController: NavController, viewModel: ProfileViewModel, calificaciones: List<CargaAcademica>?, viewModeld: CargaAcademicaViewModel) {
+fun CargaAcademica(navController: NavController, viewModel: ProfileViewModel, calificaciones: List<CargaAcademica>?) {
     //val calificaciones = viewModel.cargaAcademica
     val coroutineScope = rememberCoroutineScope()
     if (!calificaciones.isNullOrEmpty()) {
@@ -46,8 +46,8 @@ fun CargaAcademica(navController: NavController, viewModel: ProfileViewModel, ca
                         .background(color = Color.LightGray)
                         .fillMaxWidth()
                 ) {
-                    Text(text = "Calificación: ${calificacion.semipresencial}")
-                    Text(text = "Acreditación: ${calificacion.observaciones}")
+                    Text(text = "semipresencial: ${calificacion.viernes}")
+                    Text(text = "observaciones: ${calificacion.jueves}")
                     Text(text = "Grupo: ${calificacion.grupo}")
                     Text(text = "Materia: ${calificacion.materia}")
                     Text(text = "Observaciones: ${calificacion.docente}")
@@ -59,7 +59,8 @@ fun CargaAcademica(navController: NavController, viewModel: ProfileViewModel, ca
                 Button(
                     onClick = {
                         coroutineScope.launch {
-                            viewModeld.saveItem()
+                            Log.d("SaveButton", "Save button clicked")
+                            //viewModeld.saveItem()
                         }
                     },
                     modifier = Modifier
@@ -68,6 +69,7 @@ fun CargaAcademica(navController: NavController, viewModel: ProfileViewModel, ca
                 ) {
                     Text(text = "Guardar")
                 }
+
                 Spacer(modifier = Modifier.height(16.dp))
             }
             item {
