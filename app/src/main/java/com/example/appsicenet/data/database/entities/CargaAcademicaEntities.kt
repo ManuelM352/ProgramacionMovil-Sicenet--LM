@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
     val Observaciones: String? = null
     */
 @Entity(tableName = "calificacionFinal_table")
-data class SicenetEntities (
+data class CargaAcademicaEntities (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0,
     @ColumnInfo(name = "calif") val calif: Int,
@@ -21,4 +21,16 @@ data class SicenetEntities (
     @ColumnInfo(name = "materia") val materia: String,
     @ColumnInfo(name = "Observaciones") val Observaciones: String
 )
+
+
+@Entity(tableName = "perfil_table")
+data class PerfilEntities (
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id") val id: Int = 0,
+    @ColumnInfo(name = "especialidad") val especialidad: String,
+    @ColumnInfo(name = "carrera") val carrera: String,
+    @ColumnInfo(name = "nombre") val nombre: String,
+    @ColumnInfo(name = "matricula") val matricula: String
+)
+
 

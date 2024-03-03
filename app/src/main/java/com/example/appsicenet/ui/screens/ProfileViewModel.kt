@@ -206,7 +206,6 @@ class ProfileViewModel(
             }
         }
     }
-
     fun saveCalificacionesFinales(calificaciones: List<CalificacionesFinales>) {
         viewModelScope.launch {
             // Verificar si las calificaciones ya existen en la base de datos local

@@ -74,8 +74,10 @@ class RetrofitClient(context: Context): AppContainer {
 //    }
 
     override val localDataSource: LocalDataSource by lazy {
-        LocalDataSource(SicenetDatabase.getDatabase(context).getCalfFinal())
+        val database = SicenetDatabase.getDatabase(context)
+        LocalDataSource(database.getCalfFinal(), database.getPerfilDao())
     }
+
 
     //MANEJO DE REPOSITORY´S
 //    override val itemsRepository: CargaAcademicaRepository by lazy {

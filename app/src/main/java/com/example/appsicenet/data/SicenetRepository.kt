@@ -2,15 +2,13 @@ package com.example.appsicenet.data
 
 
 import com.example.appsicenet.data.database.LocalDataSource
-import com.example.appsicenet.data.database.dao.SicenetDao
-import com.example.appsicenet.data.database.entities.SicenetEntities
+import com.example.appsicenet.data.database.entities.PerfilEntities
 import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.CargaAcademica
 import com.example.appsicenet.models.Kardex
 import com.example.appsicenet.models.LoginResult
-import com.example.appsicenet.network.AddCookiesInterceptor
 import com.example.appsicenet.network.SICENETApiService
 import com.example.appsicenet.network.califUnidadesRequestBody
 import com.example.appsicenet.network.califfinalRequestBody
@@ -18,16 +16,7 @@ import com.example.appsicenet.network.cargaAcademicaRequestBody
 import com.example.appsicenet.network.kardexRequestBody
 import com.example.appsicenet.network.loginRequestBody
 import com.example.appsicenet.network.profileRequestBody
-import com.example.appsicenet.ui.screens.ProfileViewModel
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.IOException
 
 
@@ -66,26 +55,38 @@ class NetworkSicenetRepository(
             val json = Json { ignoreUnknownKeys = true }
             return alumnoResultJson?.let { json.decodeFromString(it) } ?: LoginResult()
         } else {
-
             throw IOException("Error en la obtencion del perfil código: ${response.code()}")
         }
     }
 
     override suspend fun getAcademicProfile(): Attributes {
+        // Si no, obtén el perfil desde la API
         val response = sicenetApiService.getAcademicProfile(profileRequestBody()).execute()
         if (response.isSuccessful) {
             val envelope = response.body()
             val alumnoResultJson: String? =
                 envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
             val json = Json { ignoreUnknownKeys = true }
-            //val addCookiesInterceptor = AddCookiesInterceptor(context)
-            return alumnoResultJson?.let { json.decodeFromString(it) } ?: Attributes()
-        } else {
+            val academicProfile = alumnoResultJson?.let { json.decodeFromString(it) } ?: Attributes()
 
+            // Convierte el objeto Attributes a PerfilEntities
+            val perfilEntities = PerfilEntities(
+                especialidad = academicProfile.especialidad ?: "",
+                carrera = academicProfile.carrera ?: "",
+                nombre = academicProfile.nombre ?: "",
+                matricula = academicProfile.matricula ?: ""
+            )
+
+            // Guarda el perfil en el localDataSource para futuras consultas
+            localDataSource.insertPerfil(perfilEntities)
+
+            return academicProfile
+        } else {
             throw IOException("Error en la obtencion del perfil código: ${response.code()}")
         }
-
     }
+
+
 
     override suspend fun getCalificacionesFinales(): List<CalificacionesFinales> {
         val response = sicenetApiService.getCalifFinal(califfinalRequestBody()).execute()
@@ -108,6 +109,7 @@ class NetworkSicenetRepository(
     override suspend fun getAllCalfFinalFromDatabase(): List<CalificacionesFinales> {
         return localDataSource.getAllCalificaciones()
     }
+
 
 
     override suspend fun getCalificacionesUnidades(): List<CalificacionUnidades> {
