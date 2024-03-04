@@ -10,6 +10,11 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.appsicenet.SicenetApplication
 import com.example.appsicenet.data.SicenetRepository
 import com.example.appsicenet.data.database.LocalDataSource
@@ -20,6 +25,8 @@ import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.CargaAcademica
 import com.example.appsicenet.models.Kardex
 import com.example.appsicenet.models.LoginResult
+import com.example.appsicenet.workers.SyncDataWorker
+//import com.example.appsicenet.workers.SyncDataWorker
 import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.launch
@@ -34,6 +41,7 @@ sealed interface SicenetUiState {
 }
 
 class ProfileViewModel(
+    private val workManager: WorkManager,
     private val sicenetRepository: SicenetRepository,
     private val localDataSource: LocalDataSource
 ): ViewModel() {
@@ -103,8 +111,8 @@ class ProfileViewModel(
                     attributes = academicProfileResult
 
                     // Guarda las credenciales si el inicio de sesión fue exitoso
-                    saveCredentialsIfSuccessfulLogin(matricula, contrasenia)
-
+                    //saveCredentialsIfSuccessfulLogin(matricula, contrasenia)
+                    scheduleDataSync()
                     sicenetUiState = SicenetUiState.Success
                 } else {
                     sicenetUiState = SicenetUiState.Error
@@ -148,9 +156,11 @@ class ProfileViewModel(
             sicenetUiState = SicenetUiState.Loading
             sicenetUiState = try {
                 val listResult = withContext(Dispatchers.IO) {
+                    scheduleDataSync()
                     val calificaciones = sicenetRepository.getCalificacionesFinales()
-                    localDataSource.insertCalificaciones(calificaciones)
+                    //localDataSource.insertCalificaciones(calificaciones)
                     calificaciones
+
                 }
                 calificacionesFinales = listResult
 
@@ -231,17 +241,37 @@ class ProfileViewModel(
             }
         }
     }
+
+    fun scheduleDataSync() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val syncDataRequest = OneTimeWorkRequestBuilder<SyncDataWorker>()
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniqueWork(
+            "syncDataWork",
+            ExistingWorkPolicy.REPLACE,
+            syncDataRequest
+        )
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as SicenetApplication)
                 val sicenetRepository = application.container.SicenetRepository
                 val localDataSource = application.container.localDataSource
-                ProfileViewModel(sicenetRepository = sicenetRepository, localDataSource = localDataSource)
+                val workManager = WorkManager.getInstance(application)
+                ProfileViewModel(workManager,sicenetRepository, localDataSource)
             }
-
         }
     }
+
+
+
 }
 
 

@@ -52,6 +52,7 @@ android {
 }
 
 dependencies {
+
     val room_version = "2.6.1"
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -90,5 +91,6 @@ dependencies {
     implementation("androidx.room:room-common:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 
-
+    //WORKMANAGER
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
 }

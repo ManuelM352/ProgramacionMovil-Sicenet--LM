@@ -17,7 +17,6 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 interface AppContainer {
     val SicenetRepository : SicenetRepository
-    //val itemsRepository: CargaAcademicaRepository
     val localDataSource: LocalDataSource // Agregar LocalDataSource al AppContainer
 }
 
@@ -68,10 +67,6 @@ class RetrofitClient(context: Context): AppContainer {
         retrofit.create(SICENETApiService::class.java)
     }
 
-//    //MANEJO DE REPOSITORY´S
-//    override val itemsRepository: CargaAcademicaRepository by lazy {
-//        OfflineCargaAcademicaRepository(SicenetDatabase.getDatabase(context).cargaAcademicaDAO())
-//    }
 
     override val localDataSource: LocalDataSource by lazy {
         val database = SicenetDatabase.getDatabase(context)
@@ -79,10 +74,6 @@ class RetrofitClient(context: Context): AppContainer {
     }
 
 
-    //MANEJO DE REPOSITORY´S
-//    override val itemsRepository: CargaAcademicaRepository by lazy {
-//        OfflineCargaAcademicaRepository(SicenetDatabasee.getDatabasee(context).cargaAcademicaDAO())
-//    }
 
     override val SicenetRepository: SicenetRepository by lazy {
         NetworkSicenetRepository(retrofitService, localDataSource)

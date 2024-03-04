@@ -18,5 +18,4 @@ interface CalfFinalDao {
 
     @Query("DELETE FROM calificacionFinal_table")
     suspend fun deleteAllFromClafFinal()
-
 }
