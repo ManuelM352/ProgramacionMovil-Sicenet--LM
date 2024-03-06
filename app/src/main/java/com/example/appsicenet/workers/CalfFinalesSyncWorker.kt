@@ -5,7 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.appsicenet.SicenetApplication
 
-class DataSyncWorker(
+class CalfFinalesSyncWorker(
     context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
@@ -19,7 +19,6 @@ class DataSyncWorker(
                     val calfFinanal = sicenetRepository.getCalificacionesFinales()
                     localDataSource.insertCalificaciones(calfFinanal)
                 }
-                // Agregar más casos para otras funcionalidades
             }
             return Result.success()
         } catch (e: Exception) {

@@ -10,12 +10,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.example.appsicenet.SicenetApplication
@@ -28,14 +23,12 @@ import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.CargaAcademica
 import com.example.appsicenet.models.Kardex
 import com.example.appsicenet.models.LoginResult
-import com.example.appsicenet.workers.DataSyncWorker
+import com.example.appsicenet.workers.CalfFinalesSyncWorker
+import com.example.appsicenet.workers.CalfUnidadesWorker
+import com.example.appsicenet.workers.CargaAcademicaWorker
 import com.example.appsicenet.workers.FetchDataWorker
 //import com.example.appsicenet.workers.SyncDataWorker
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -209,15 +202,26 @@ class ProfileViewModel(
             .setInputData(workDataOf("matricula" to matricula, "contrasenia" to contrasenia))
             .build()
 
-        // Configurar el trabajo para otras funcionalidades
-        val dataSyncRequest = OneTimeWorkRequestBuilder<DataSyncWorker>()
+
+        val dataSyncRequest = OneTimeWorkRequestBuilder<CalfFinalesSyncWorker>()
             .setInputData(workDataOf("dataType" to "calfFinales"))
+            .build()
+
+
+        val calfUnidadSyncRequest = OneTimeWorkRequestBuilder<CalfUnidadesWorker>()
+            .setInputData(workDataOf("dataType" to "calfUnidades"))
+            .build()
+
+        val cargaAcademicaSyncRequest = OneTimeWorkRequestBuilder<CargaAcademicaWorker>()
+            .setInputData(workDataOf("dataType" to "cargaAcademica"))
             .build()
 
         // Encadenar los trabajos para asegurar su ejecución en orden
         WorkManager.getInstance()
             .beginWith(authAndProfileRequest)
             .then(dataSyncRequest)
+            .then(calfUnidadSyncRequest)
+            //.then(cargaAcademicaSyncRequest)
             .enqueue()
     }
 
