@@ -2,7 +2,6 @@ package com.example.appsicenet.ui.screens
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +19,6 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,30 +34,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.Visibility
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.appsicenet.data.RetrofitClient
-import com.example.appsicenet.models.Attributes
-import com.example.appsicenet.models.CalificacionUnidades
-import com.example.appsicenet.models.Envelope
-import com.example.appsicenet.models.Kardex
-import com.example.appsicenet.models.LoginResult
-import com.example.appsicenet.network.AddCookiesInterceptor
-import com.example.appsicenet.network.loginRequestBody
-import com.example.appsicenet.network.profileRequestBody
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.ResponseBody
-import okhttp3.internal.addHeaderLenient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.time.format.TextStyle
-import kotlin.jvm.Throws
 
 
 @RequiresApi(Build.VERSION_CODES.O)

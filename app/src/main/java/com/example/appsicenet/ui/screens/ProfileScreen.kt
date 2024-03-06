@@ -1,14 +1,10 @@
 package com.example.appsicenet.ui.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,12 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddReaction
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,49 +23,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.navegation.NavigationScreens
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.example.appsicenet.data.RetrofitClient
-import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
-import com.example.appsicenet.models.CargaAcademica
-import com.example.appsicenet.models.Envelope
 import com.example.appsicenet.models.EnvelopeCalf
-import com.example.appsicenet.models.EnvelopeCalfUni
-import com.example.appsicenet.models.EnvelopeCargaAcademica
-import com.example.appsicenet.models.EnvelopeKardex
-import com.example.appsicenet.models.Kardex
-import com.example.appsicenet.network.AddCookiesInterceptor
-import com.example.appsicenet.network.califUnidadesRequestBody
-import com.example.appsicenet.network.califfinalRequestBody
-import com.example.appsicenet.network.cargaAcademicaRequestBody
-import com.example.appsicenet.network.kardexRequestBody
-import com.example.appsicenet.network.profileRequestBody
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.intOrNull
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.time.format.TextStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

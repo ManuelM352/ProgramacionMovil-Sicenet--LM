@@ -19,6 +19,7 @@ import com.example.appsicenet.ui.screens.ProfileViewModel
 import com.example.appsicenet.ui.theme.AppSicenetTheme
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

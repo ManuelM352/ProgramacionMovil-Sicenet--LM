@@ -16,13 +16,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 interface AppContainer {
-    val SicenetRepository : SicenetRepository
+    val sicenetRepository : SicenetRepository
     val localDataSource: LocalDataSource // Agregar LocalDataSource al AppContainer
 }
 
-class RetrofitClient(context: Context): AppContainer {
-
-
+class DefaultAppContainer(context: Context): AppContainer {
 
     private val BASE_URL = "https://sicenet.surguanajuato.tecnm.mx"
 
@@ -74,8 +72,7 @@ class RetrofitClient(context: Context): AppContainer {
     }
 
 
-
-    override val SicenetRepository: SicenetRepository by lazy {
+    override val sicenetRepository: SicenetRepository by lazy {
         NetworkSicenetRepository(retrofitService, localDataSource)
     }
 

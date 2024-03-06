@@ -10,7 +10,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.appsicenet.ui.screens.CalfFinalScreen
 import com.example.appsicenet.ui.screens.CalfUniScreen
 import com.example.appsicenet.ui.screens.CargaAcademica
-import com.example.appsicenet.ui.screens.CargaAcademicaViewModel
 import com.example.appsicenet.ui.screens.KardexScreen
 import com.example.appsicenet.ui.screens.LoginScreen
 import com.example.appsicenet.ui.screens.ProfileScreen

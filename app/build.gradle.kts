@@ -93,4 +93,7 @@ dependencies {
 
     //WORKMANAGER
     implementation("androidx.work:work-runtime-ktx:2.8.1")
+
+    //LIVEDATA
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.0")
 }

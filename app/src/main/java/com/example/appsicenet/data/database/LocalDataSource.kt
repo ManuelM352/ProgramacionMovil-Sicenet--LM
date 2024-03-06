@@ -49,19 +49,10 @@ class LocalDataSource(
         perfilDao.insertAll(perfil)
     }
 
-    suspend fun getAllPerfil(): PerfilEntities? {
-        return perfilDao.getAllPerfil()
-    }
-
     //CREDENCIALES DEL INICIO DE SECIÓN
     suspend fun saveCredentials(matricula: String, contrasenia: String) {
         credentialDao.deleteAllFromcredentials()
         val credentials = Credentials(matricula = matricula, contrasenia =  contrasenia)
         credentialDao.insert(credentials)
     }
-
-    suspend fun getCredentials(): Credentials? {
-        return credentialDao.getCredentials()
-    }
-
 }

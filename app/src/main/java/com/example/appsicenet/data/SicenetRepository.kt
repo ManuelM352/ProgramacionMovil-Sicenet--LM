@@ -21,24 +21,12 @@ import java.io.IOException
 
 
 interface SicenetRepository {
-//    suspend fun getAcademicProfile(): Call<Envelope>
-//    suspend fun getCalificacionesFinales(): Call<EnvelopeCalf>
-//    suspend fun getCalificacionesUnidades(): Call<EnvelopeCalfUni>
-//    suspend fun getKardex(): Call<EnvelopeKardex>
-//    suspend fun getCargaAcademica(): Call<EnvelopeCargaAcademica> // Nuevo método
-
-
-    //CORRECCION DE METODOS PARA LA OBTENCIÓN DE LISTAS DE OBJETOS
-
     suspend fun getLoginResult(matricula: String, contrasenia: String): LoginResult
     suspend fun getAcademicProfile(): Attributes
     suspend fun getCalificacionesFinales(): List<CalificacionesFinales>
     suspend fun getCalificacionesUnidades(): List<CalificacionUnidades>
     suspend fun getKardex(): Kardex
     suspend fun getCargaAcademica(): List<CargaAcademica>
-    suspend fun getAllCalfFinalFromDatabase(): List<CalificacionesFinales>
-
-
 }
 
 class NetworkSicenetRepository(
@@ -59,7 +47,6 @@ class NetworkSicenetRepository(
     }
 
     override suspend fun getAcademicProfile(): Attributes {
-        // Si no, obtén el perfil desde la API
         val response = sicenetApiService.getAcademicProfile(profileRequestBody()).execute()
         if (response.isSuccessful) {
             val envelope = response.body()
@@ -68,23 +55,11 @@ class NetworkSicenetRepository(
             val json = Json { ignoreUnknownKeys = true }
             val academicProfile = alumnoResultJson?.let { json.decodeFromString(it) } ?: Attributes()
 
-            // Convierte el objeto Attributes a PerfilEntities
-            val perfilEntities = PerfilEntities(
-                especialidad = academicProfile.especialidad ?: "",
-                carrera = academicProfile.carrera ?: "",
-                nombre = academicProfile.nombre ?: "",
-                matricula = academicProfile.matricula ?: ""
-            )
-
-            // Guarda el perfil en el localDataSource para futuras consultas
-            localDataSource.insertPerfil(perfilEntities)
-
             return academicProfile
         } else {
             throw IOException("Error en la obtencion del perfil código: ${response.code()}")
         }
     }
-
 
 
     override suspend fun getCalificacionesFinales(): List<CalificacionesFinales> {
@@ -95,20 +70,11 @@ class NetworkSicenetRepository(
                 envelope?.bodyCalf?.getAllCalifFinalByAlumnosResponse?.getAllCalifFinalByAlumnosResult
             val json = Json { ignoreUnknownKeys = true; coerceInputValues = true }
             val carga: List<CalificacionesFinales> = json.decodeFromString(alumnoResultJson ?: "")
-
-            // Guardar los datos en la base de datos local
-            localDataSource.insertCalificaciones(carga)
-
             return carga
         } else {
             throw IOException("Error en la obtencion del perfil código: ${response.code()}")
         }
     }
-
-    override suspend fun getAllCalfFinalFromDatabase(): List<CalificacionesFinales> {
-        return localDataSource.getAllCalificaciones()
-    }
-
 
 
     override suspend fun getCalificacionesUnidades(): List<CalificacionUnidades> {

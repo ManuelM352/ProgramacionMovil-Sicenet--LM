@@ -1,7 +1,5 @@
 package com.example.appsicenet.models
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.simpleframework.xml.Element
@@ -44,10 +42,7 @@ data class AccesoLoginResponse @JvmOverloads constructor(
 )
 
 
-
-
 //CALIFICACIONES FINALES
-// Clases para la respuesta de calificaciones finales
 @Root(name = "Envelope", strict = false)
 data class EnvelopeCalf @JvmOverloads constructor(
     @field:Element(name = "Body", required = false)
