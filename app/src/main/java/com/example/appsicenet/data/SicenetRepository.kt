@@ -132,8 +132,3 @@ class NetworkSicenetRepository(
 
 
 }
-//override suspend fun getAcademicProfile(): Call<Envelope> = sicenetApiService.getAcademicProfile(profileRequestBody())
-//override suspend fun getCalificacionesFinales(): Call<EnvelopeCalf> = sicenetApiService.getCalifFinal(califfinalRequestBody())
-//override suspend fun getCalificacionesUnidades(): Call<EnvelopeCalfUni> = sicenetApiService.getCalifUnidades(califUnidadesRequestBody())
-//override suspend fun getKardex(): Call<EnvelopeKardex> = sicenetApiService.getKardex(kardexRequestBody())
-//override suspend fun getCargaAcademica(): Call<EnvelopeCargaAcademica> = sicenetApiService.getCargaAcademica(cargaAcademicaRequestBody())

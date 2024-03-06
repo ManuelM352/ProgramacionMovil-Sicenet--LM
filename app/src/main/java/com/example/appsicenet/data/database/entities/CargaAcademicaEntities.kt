@@ -3,6 +3,10 @@ package com.example.appsicenet.data.database.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.appsicenet.models.KardexItem
+import com.example.appsicenet.models.Promedio
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 @Entity(tableName = "calificacionFinal_table")
@@ -70,4 +74,3 @@ data class cargaAcademicaEnties(
     @ColumnInfo(name = "grupo") val grupo: String
 
 )
-

@@ -2,6 +2,7 @@ package com.example.appsicenet.ui.screens
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import com.example.appsicenet.navegation.NavigationScreens
 import androidx.compose.ui.platform.LocalContext
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.EnvelopeCalf
+import com.example.appsicenet.workers.WorkerState
 import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -132,6 +134,14 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
                     style = androidx.compose.ui.text.TextStyle(fontSize = 20.sp)
                 )
             }
+        }
+        // Observa el estado del Worker de inicio de sesión y muestra un mensaje de error si es necesario
+        when (viewModel.loginWorkerState.value) {
+            WorkerState.SUCCESS -> {
+                Log.d("Exito","__________________________________________________________________________________")
+            }
+
+            else -> {}
         }
     }
 }

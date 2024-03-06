@@ -2,6 +2,7 @@ package com.example.appsicenet.ui.screens
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.appsicenet.workers.WorkerState
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -48,8 +50,6 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
         fontSize = 24.sp, // Tamaño de fuente deseado
         fontWeight = FontWeight.Bold // Peso de la fuente deseado
     )
-    //authenticate(context,matricula, contrasenia, navController, viewModel)
-    navegacionProfile(navController, viewModel)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,17 +95,9 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
         Spacer(modifier = Modifier.height(32.dp))
         Button(
             onClick = {
-                //authenticate(context,matricula, contrasenia, navController, viewModel)
                 viewModel.matricula = matricula
                 viewModel.contrasenia = contrasenia
-                viewModel.performLoginAndFetchAcademicProfile()
-                if(viewModel.accesoLoginResult?.acceso==true) {
-                    viewModel.getCalificacionesFinales()
-                    viewModel.getCalificacionesUnidades()
-                    viewModel.getKardex()
-                    viewModel.getCargaAcademica()
-                }
-
+                viewModel.performLoginAndFetchAcademicProfile(navController)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -113,102 +105,16 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
         ) {
             Text("Iniciar sesión")
         }
-    }
-}
 
-@Composable
-fun navegacionProfile(navController : NavController, viewModel: ProfileViewModel){
-    val context = LocalContext.current
-    when (viewModel.sicenetUiState){
-        SicenetUiState.Loading -> Unit
-        SicenetUiState.Success -> {
-            viewModel.attributes
-            navController.navigate("profile")
-        }
-
-        else -> {
-            showError(context, "Error al obtener el perfil académico.")
+        // Observa el estado del Worker de inicio de sesión y muestra un mensaje de error si es necesario
+        when (viewModel.loginWorkerState.value) {
+            WorkerState.FAILED -> {
+                showError(context, "Error al iniciar sesión. Verifica tus credenciales e intenta nuevamente.")
+            }
+            else -> {}
         }
     }
 }
-
-
-
-//private fun authenticate(context: Context, matricula: String, contrasenia: String,  navController: NavController , viewModel: ProfileViewModel) {
-//    val bodyLogin = loginRequestBody(matricula, contrasenia)
-//    val service = RetrofitClient(context).retrofitService
-//
-//    service.login(bodyLogin).enqueue(object : Callback<ResponseBody> {
-//        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
-//            if (response.isSuccessful) {
-//                val service = RetrofitClient(context).retrofitService
-//                val bodyProfile = profileRequestBody()
-//                service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
-//                    override fun onResponse(call: Call<Envelope>, response: Response<Envelope>) {
-//                        if (response.isSuccessful) {
-//                            val envelope = response.body()
-//                            val alumnoResultJson: String? = envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
-//
-//                            // Deserializa la cadena JSON a AlumnoAcademicoResult
-//                            val json = Json { ignoreUnknownKeys = true }
-//                            val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
-//
-//                            Log.w("exito", "se obtuvo el perfil: ${alumnoAcademicoResult}")
-//
-//                            getProfile(context, navController,viewModel)
-//
-//
-//                        } else {
-//                            showError(context, "Credenciales invalidas")
-//                        }
-//                    }
-//                    override fun onFailure(call: Call<Envelope>, t: Throwable) {
-//                        t.printStackTrace()
-//                        showError(context, "Error en la solicitud del perfil académico")
-//                    }
-//                })
-//            } else {
-//                showError(context, "Error en la autenticación. Código de respuesta: ${response.code()}")
-//            }
-//        }
-//
-//        override fun onFailure(call: Call<ResponseBody>, t: Throwable){
-//            t.printStackTrace()
-//            showError(context, "Error en la solicitud")
-//        }
-//    })
-//}
-//
-//private fun getProfile(context: Context, navController: NavController, viewModel: ProfileViewModel) {
-//    val service = RetrofitClient(context).retrofitService
-//    val bodyProfile = profileRequestBody()
-//    service.getAcademicProfile(bodyProfile).enqueue(object : Callback<Envelope> {
-//        override fun onResponse(call: Call<Envelope>, response: Response<Envelope>) {
-//            if (response.isSuccessful) {
-//                val envelope = response.body()
-//                val alumnoResultJson: String? = envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
-//
-//                val json = Json { ignoreUnknownKeys = true }
-//                val alumnoAcademicoResult: Attributes? = alumnoResultJson?.let { json.decodeFromString(it) }
-//
-//                Log.w("Exito", "Se obtuvo el perfil 2: ${alumnoAcademicoResult}")
-//                val alumnoAcademicoResultJson = Json.encodeToString(alumnoAcademicoResult)
-//
-//                val addCookiesInterceptor = AddCookiesInterceptor(context)
-//                //addCookiesInterceptor.clearCookies()
-//
-//                viewModel.attributes=alumnoAcademicoResult
-//                navController.navigate("profile")
-//            } else {
-//                showError(context, "Error al obtener el perfil académico. Código de respuesta: ${response.code()}")
-//            }
-//        }
-//        override fun onFailure(call: Call<Envelope>, t: Throwable) {
-//            t.printStackTrace()
-//            showError(context, "Error en la solicitud del perfil académico")
-//        }
-//    })
-//}
 
 fun showError(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
