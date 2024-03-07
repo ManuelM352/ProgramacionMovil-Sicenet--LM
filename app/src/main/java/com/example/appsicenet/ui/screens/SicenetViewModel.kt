@@ -26,7 +26,9 @@ import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.CargaAcademica
 import com.example.appsicenet.models.Kardex
+import com.example.appsicenet.models.KardexItem
 import com.example.appsicenet.models.LoginResult
+import com.example.appsicenet.models.Promedio
 import com.example.appsicenet.workers.CalfFinalesSyncWorker
 import com.example.appsicenet.workers.CalfUnidadesWorker
 import com.example.appsicenet.workers.CargaAcademicaWorker
@@ -86,28 +88,114 @@ class ProfileViewModel(
                 // Verificar si hay credenciales almacenadas localmente
                 val storedCredentials = localDataSource.getCredentials()
 
-//                // Si hay credenciales almacenadas y coinciden con las ingresadas por el usuario
-//                if (storedCredentials != null && storedCredentials.matricula == matricula &&
-//                    storedCredentials.contrasenia == contrasenia) {
-//                    // Obtener datos del perfil desde la base de datos local
-//
-//                    // Obtener datos del perfil desde la base de datos local
-//                    val perfil = localDataSource.getAllPerfil()
-//                    attributes = perfil?.let {
-//                        Login(
-//                            especialidad = it.especialidad,
-//                            carrera = it.carrera,
-//                            nombre = it.nombre,
-//                            matricula = it.matricula
-//                        )
-//                    }
-//
-//                    // Navegar a la pantalla de perfil
-//                    navController.navigate("profile")
-//
-//                    // Indicar éxito en el estado de la UI
-//                    sicenetUiState = SicenetUiState.Success
-//                } else{
+                // Si hay credenciales almacenadas y coinciden con las ingresadas por el usuario
+                if (storedCredentials != null && storedCredentials.matricula == matricula &&
+                    storedCredentials.contrasenia == contrasenia) {
+                    // Obtener datos del perfil desde la base de datos local
+
+                    // Obtener datos del perfil desde la base de datos local
+                    val perfil = localDataSource.getAllPerfil()
+                    attributes = perfil?.let {
+                        Login(
+                            especialidad = it.especialidad,
+                            carrera = it.carrera,
+                            nombre = it.nombre,
+                            matricula = it.matricula
+                        )
+                    }
+
+                    // Obtener datos de calificaciones finales desde la base de datos local
+                    val calfFinal = localDataSource.getAllCalificaciones()
+                    calificacionesFinales = calfFinal?.map {
+                        CalificacionesFinales(
+                            calif = it.calif,
+                            acred = it.acred,
+                            grupo = it.grupo,
+                            materia = it.materia,
+                            Observaciones = it.Observaciones
+                        )
+                    }
+
+                    // Obtener datos de calificaciones finales desde la base de datos local
+                    val calfunidad = localDataSource.getAllCalificacionesUnidad()
+                    calificacionesUnidades = calfunidad?.map {
+                        CalificacionUnidades(
+                            observaciones = it.observaciones,
+                            c5 = it.c5,
+                            c4 = it.c4,
+                            c3 = it.c3,
+                            c2 = it.c2,
+                            c1 = it.c1,
+                            unidadesActivas = it.unidadesActivas,
+                            materia = it.materia,
+                            grupo = it.grupo
+                        )
+                    }
+
+                    // Obtener datos de calificaciones finales desde la base de datos local
+                    val cargaAcademicaEntities = localDataSource.getAllCargaAcademica()
+                    cargaAcademica = cargaAcademicaEntities?.map {
+                        CargaAcademica(
+                            semipresencial = it.semipresencial,
+                            observaciones = it.observaciones,
+                            docente = it.docente,
+                            clvOficial = it.clvOficial,
+                            sabado = it.sabado,
+                            viernes = it.viernes,
+                            jueves = it.jueves,
+                            miercoles = it.miercoles,
+                            martes = it.martes,
+                            lunes = it.lunes,
+                            estadoMateria = it.estadoMateria,
+                            creditosMateria = it.creditosMateria,
+                            materia = it.materia,
+                            grupo = it.grupo
+                        )
+                    }
+
+                    // Obtener datos de kardex desde la base de datos local
+                    val kardexEntities = localDataSource.getAllkardex()
+                    val promedioEntities = localDataSource.getAllPromedio()
+                    kardex = Kardex(
+                        lstKardex = kardexEntities?.map {
+                            KardexItem(
+                                s3 = it.s3,
+                                p3 = it.p3,
+                                a3 = it.a3,
+                                clvMat = it.clvMat,
+                                clvOfiMat = it.clvOfiMat,
+                                materia = it.materia,
+                                cdts = it.cdts,
+                                calif = it.calif,
+                                acred = it.acred,
+                                s1 = it.s1,
+                                p1 = it.p1,
+                                a1 = it.a1,
+                                s2 = it.s2,
+                                p2 = it.p2,
+                                a2 = it.a2,
+                                fecha = it.fecha
+                            )
+                        },
+                        promedio = promedioEntities?.let {
+                            Promedio(
+                                promedioGral = it.promedioGral,
+                                cdtsAcum = it.cdtsAcum,
+                                cdtsPlan = it.cdtsPlan,
+                                matCursadas = it.matCursadas,
+                                matAprobadas = it.matAprobadas,
+                                avanceCdts = it.avanceCdts,
+                                fecha = it.fecha
+                            )
+                        }
+                    )
+
+                    // Navegar a la pantalla de perfil
+                    navController.navigate("profile")
+
+                    // Indicar éxito en el estado de la UI
+                    sicenetUiState = SicenetUiState.Success
+                } else{
 
                     // Sincronizar datos utilizando WorkManager
 
@@ -132,7 +220,7 @@ class ProfileViewModel(
                     } else {
                         sicenetUiState = SicenetUiState.Error
                     }
-//                }
+                }
 
 
             } catch (e: IOException) {
