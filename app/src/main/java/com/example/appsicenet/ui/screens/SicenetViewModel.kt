@@ -30,7 +30,9 @@ import com.example.appsicenet.models.LoginResult
 import com.example.appsicenet.workers.CalfFinalesSyncWorker
 import com.example.appsicenet.workers.CalfUnidadesWorker
 import com.example.appsicenet.workers.CargaAcademicaWorker
+import com.example.appsicenet.workers.KardexWorker
 import com.example.appsicenet.workers.LoginWorker
+import com.example.appsicenet.workers.PromedioWorker
 import com.example.appsicenet.workers.WorkerState
 //import com.example.appsicenet.workers.SyncDataWorker
 import kotlinx.coroutines.Dispatchers
@@ -291,6 +293,19 @@ class ProfileViewModel(
             .setConstraints(CargaAcademicaWorker.constraints) // Agregar restricciones de red
             .build()
 
+        // Configurar el trabajo para la sincronización de calificaciones finales
+        val kardex = OneTimeWorkRequestBuilder<KardexWorker>()
+            .setInputData(workDataOf("dataType" to "kardex"))
+            .setConstraints(KardexWorker.constraints) // Agregar restricciones de red
+            .build()
+
+        // Configurar el trabajo para la sincronización de calificaciones finales
+        val promedio = OneTimeWorkRequestBuilder<PromedioWorker>()
+            .setInputData(workDataOf("dataType" to "promedio"))
+            .setConstraints(PromedioWorker.constraints) // Agregar restricciones de red
+            .build()
+
+
 
         // Encadenar los trabajos para asegurar su ejecución en orden
         WorkManager.getInstance()
@@ -298,10 +313,17 @@ class ProfileViewModel(
             .then(cargaAcademica)
             .enqueue()
 
+
         // Encadenar los trabajos para asegurar su ejecución en orden
         WorkManager.getInstance()
             .beginWith(dataSyncRequest)
             .then(califUnidades)
+            .enqueue()
+
+        // Encadenar los trabajos para asegurar su ejecución en orden
+        WorkManager.getInstance()
+            .beginWith(kardex)
+            .then(promedio)
             .enqueue()
 
     }

@@ -1,26 +1,33 @@
 package com.example.appsicenet.data.database
 
+import androidx.room.ColumnInfo
 import com.example.appsicenet.data.database.dao.CalfFinalDao
 import com.example.appsicenet.data.database.dao.CalfUnidadDao
 import com.example.appsicenet.data.database.dao.CargaAcademicaDao
+import com.example.appsicenet.data.database.dao.KardexItemDao
 import com.example.appsicenet.data.database.dao.PerfilDao
+import com.example.appsicenet.data.database.dao.PromedioDao
 import com.example.appsicenet.data.database.dao.loginDao
 import com.example.appsicenet.data.database.entities.CalfUnidadEnties
 import com.example.appsicenet.data.database.entities.CargaAcademicaEntities
 import com.example.appsicenet.data.database.entities.Credentials
+import com.example.appsicenet.data.database.entities.KardexEntities
 import com.example.appsicenet.data.database.entities.PerfilEntities
+import com.example.appsicenet.data.database.entities.PromedioEntities
 import com.example.appsicenet.data.database.entities.cargaAcademicaEnties
 import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.CargaAcademica
-import com.example.appsicenet.models.Login
+import com.example.appsicenet.models.KardexItem
 
 class LocalDataSource(
     private val calfFinalDao: CalfFinalDao,
     private val perfilDao: PerfilDao,
     private val credentialDao: loginDao,
     private val calfUnidadDao: CalfUnidadDao,
-    private val cargaAcademicaDao: CargaAcademicaDao
+    private val cargaAcademicaDao: CargaAcademicaDao,
+    private val kardexItemDao: KardexItemDao,
+    private val promedioDao: PromedioDao
 ) {
 
     //INSERCIÓN Y OBTENCIÓN DE LAS CALIFICACIONES FINALES
@@ -160,6 +167,79 @@ class LocalDataSource(
                 creditosMateria = enties.creditosMateria,
                 materia = enties.materia,
                 grupo = enties.grupo
+            )
+        }
+    }
+
+    //INSERCIÓN Y OBTENCIÓN DEL KARDEX
+    suspend fun insertKardex(kardex: List<KardexItem>) {
+        kardexItemDao.deleteAllFromKardex()
+        val entities = kardex.map { enties ->
+            KardexEntities(
+                s3 = enties.s3,
+                p3 = enties.p3,
+                a3 = enties.a3,
+                clvMat = enties.clvMat,
+                clvOfiMat = enties.clvOfiMat,
+                materia = enties.materia,
+                cdts = enties.cdts,
+                calif = enties.calif,
+                acred = enties.acred,
+                s1 = enties.s1,
+                p1 = enties.p1,
+                a1 = enties.a1,
+                s2 = enties.s2,
+                p2 = enties.p2,
+                a2 = enties.a2,
+                fecha = enties.fecha
+            )
+        }
+        kardexItemDao.insertAllKardex(entities)
+    }
+
+    suspend fun getAllkardex(): List<KardexItem> {
+        val entities = kardexItemDao.getAllKardex()
+        return entities.map { enties ->
+            KardexItem(
+                s3 = enties.s3,
+                p3 = enties.p3,
+                a3 = enties.a3,
+                clvMat = enties.clvMat,
+                clvOfiMat = enties.clvOfiMat,
+                materia = enties.materia,
+                cdts = enties.cdts,
+                calif = enties.calif,
+                acred = enties.acred,
+                s1 = enties.s1,
+                p1 = enties.p1,
+                a1 = enties.a1,
+                s2 = enties.s2,
+                p2 = enties.p2,
+                a2 = enties.a2,
+                fecha = enties.fecha
+            )
+        }
+    }
+
+    //INSERCIÓN Y OBTENCION DEL PROMEDIO
+    suspend fun insertPromedio(promedio: PromedioEntities) {
+        promedioDao.deleteAllFromPromedio()
+        promedioDao.insertAllpromedio(promedio)
+    }
+
+    suspend fun getAllPromedio(): PromedioEntities? {
+        val entities = promedioDao.getAllPromedio()
+        return entities?.let {
+            PromedioEntities(
+                matricula = it.matricula,
+                promedioGral = it.promedioGral,
+                cdtsAcum = it.cdtsAcum,
+                cdtsPlan = it.cdtsPlan,
+                matCursadas = it.matCursadas,
+                matAprobadas = it.matAprobadas,
+                avanceCdts = it.avanceCdts,
+                fecha = it.fecha
+
             )
         }
     }

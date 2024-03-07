@@ -211,7 +211,10 @@ data class KardexItem(
     val p2: String?= null,
 
     @SerialName("A2")
-    val a2: String? = null
+    val a2: String? = null,
+
+    @SerialName("fecha")
+    val fecha: String = ""
 )
 
 @Serializable
@@ -232,7 +235,10 @@ data class Promedio(
     val matAprobadas: Int? = null,
 
     @SerialName("AvanceCdts")
-    val avanceCdts: Double? = null
+    val avanceCdts: Double? = null,
+
+    @SerialName("Fecha")
+    val fecha: String = ""
 )
 
 @Serializable

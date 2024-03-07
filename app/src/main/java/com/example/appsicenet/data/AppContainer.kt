@@ -62,7 +62,8 @@ class DefaultAppContainer(context: Context): AppContainer {
     }
     override val localDataSource: LocalDataSource by lazy {
         val database = SicenetDatabase.getDatabase(context)
-        LocalDataSource(database.getCalfFinal(), database.getPerfilDao(), database.getLogin(), database.getCalfUnidad(), database.getCargaAcademica())
+        LocalDataSource(database.getCalfFinal(), database.getPerfilDao(), database.getLogin(), database.getCalfUnidad(),
+            database.getCargaAcademica(), database.getKardex(), database.getPromedio())
     }
     override val sicenetRepository: SicenetRepository by lazy {
         NetworkSicenetRepository(retrofitService, localDataSource)
