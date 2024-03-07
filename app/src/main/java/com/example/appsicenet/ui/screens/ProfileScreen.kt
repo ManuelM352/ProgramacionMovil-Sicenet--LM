@@ -1,8 +1,10 @@
 package com.example.appsicenet.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -132,14 +134,22 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
                 )
             }
         }
-        // Observa el estado del Worker de inicio de sesión y muestra un mensaje de error si es necesario
-        when (viewModel.loginWorkerState.value) {
-            WorkerState.SUCCESS -> {
-                Log.d("Exito","__________________________________________________________________________________")
+        when {
+            viewModel.calfFinalesSyncWorkerState.value == WorkerState.SUCCESS &&
+                    viewModel.calfUnidadesSyncWorkerState.value == WorkerState.SUCCESS &&
+                        viewModel.cargaAcademicaSyncWorkerState.value == WorkerState.SUCCESS &&
+                            viewModel.kardexSyncWorkerState.value == WorkerState.SUCCESS &&
+                                viewModel.promedioSyncWorkerState.value == WorkerState.SUCCESS -> {
+                // WORKERS se completaron con éxito
+                showInfo(context, "Sincronización de datos completada.")
             }
 
-            else -> {}
+            else -> {
+            }
         }
     }
 }
 
+fun showInfo(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}

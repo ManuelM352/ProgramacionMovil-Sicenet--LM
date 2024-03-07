@@ -1,5 +1,9 @@
 package com.example.appsicenet.ui.screens
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -77,20 +81,33 @@ class ProfileViewModel(
 
     private val _calfFinalesSyncWorkerState = MutableLiveData<WorkerState>()
     val calfFinalesSyncWorkerState: LiveData<WorkerState> = _calfFinalesSyncWorkerState
+
+    private val _calfUnidadesSyncWorkerState = MutableLiveData<WorkerState>()
+    val calfUnidadesSyncWorkerState: LiveData<WorkerState> = _calfUnidadesSyncWorkerState
+
+    private val _cargaAcademicaSyncWorkerState = MutableLiveData<WorkerState>()
+    val cargaAcademicaSyncWorkerState: LiveData<WorkerState> = _cargaAcademicaSyncWorkerState
+
+    private val _kardexSyncWorkerState = MutableLiveData<WorkerState>()
+    val kardexSyncWorkerState: LiveData<WorkerState> = _kardexSyncWorkerState
+
+    private val _promedioSyncWorkerState = MutableLiveData<WorkerState>()
+    val promedioSyncWorkerState: LiveData<WorkerState> = _promedioSyncWorkerState
+
     var sicenetUiState: SicenetUiState by mutableStateOf(SicenetUiState.Loading)
         private set
 
 
-    fun performLoginAndFetchAcademicProfile(navController: NavController) {
+    fun performLoginAndFetchAcademicProfile(navController: NavController, context: Context) {
         viewModelScope.launch {
             sicenetUiState = SicenetUiState.Loading
             try {
                 // Verificar si hay credenciales almacenadas localmente
                 val storedCredentials = localDataSource.getCredentials()
-
+                // Si hay credenciales almacenadas y coinciden con las ingresadas por el usuario
                 // Si hay credenciales almacenadas y coinciden con las ingresadas por el usuario
                 if (storedCredentials != null && storedCredentials.matricula == matricula &&
-                    storedCredentials.contrasenia == contrasenia) {
+                    storedCredentials.contrasenia == contrasenia && !conexion(context)) {
                     // Obtener datos del perfil desde la base de datos local
 
                     // Obtener datos del perfil desde la base de datos local
@@ -197,9 +214,6 @@ class ProfileViewModel(
                     sicenetUiState = SicenetUiState.Success
                 } else{
 
-                    // Sincronizar datos utilizando WorkManager
-
-
                     // Esperar a que se complete la sincronización de datos
                     val loginResult = withContext(Dispatchers.IO) {
                         sicenetRepository.getLoginResult(matricula ?: "", contrasenia ?: "")
@@ -232,7 +246,20 @@ class ProfileViewModel(
     }
 
 
+    fun conexion(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            return networkCapabilities != null &&
+                    (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+        } else {
+            val networkInfo = connectivityManager.activeNetworkInfo
+            return networkInfo != null && networkInfo.isConnected
+        }
+    }
 
     fun getCalificacionesFinales() {
         viewModelScope.launch {
@@ -311,20 +338,6 @@ class ProfileViewModel(
             }
         }
     }
-    fun saveCalificacionesFinales(calificaciones: List<CalificacionesFinales>) {
-        viewModelScope.launch {
-            // Verificar si las calificaciones ya existen en la base de datos local
-            val existingCalificaciones = localDataSource.getAllCalificaciones()
-            if (existingCalificaciones.isEmpty()) {
-                // Si no existen, guardar las calificaciones finales en la base de datos local
-                localDataSource.insertCalificaciones(calificaciones)
-            } else {
-                // Si existen, no hacer nada
-                Log.d("ProfileViewModel", "Las calificaciones ya existen en la base de datos local")
-            }
-        }
-    }
-
 
     // Método para sincronizar datos utilizando WorkManager
     fun syncDataWithWorkManager(matricula: String, contrasenia: String) {
@@ -340,6 +353,32 @@ class ProfileViewModel(
             .setInputData(workDataOf("dataType" to "calfFinales"))
             .setConstraints(CalfFinalesSyncWorker.constraints) // Agregar restricciones de red
             .build()
+
+
+        // Configurar el trabajo para la sincronización de calificaciones por unidad
+        val califUnidades = OneTimeWorkRequestBuilder<CalfUnidadesWorker>()
+            .setInputData(workDataOf("dataType" to "calfUni"))
+            .setConstraints(CalfUnidadesWorker.constraints) // Agregar restricciones de red
+            .build()
+
+        // Configurar el trabajo para la sincronización de CargaAcademicaWorker
+        val cargaAcademica = OneTimeWorkRequestBuilder<CargaAcademicaWorker>()
+            .setInputData(workDataOf("dataType" to "cargaAcademica"))
+            .setConstraints(CargaAcademicaWorker.constraints) // Agregar restricciones de red
+            .build()
+
+        // Configurar el trabajo para la sincronización de KardexWorker
+        val kardex = OneTimeWorkRequestBuilder<KardexWorker>()
+            .setInputData(workDataOf("dataType" to "kardex"))
+            .setConstraints(KardexWorker.constraints) // Agregar restricciones de red
+            .build()
+
+        // Configurar el trabajo para la sincronización de PromedioWorker
+        val promedio = OneTimeWorkRequestBuilder<PromedioWorker>()
+            .setInputData(workDataOf("dataType" to "promedio"))
+            .setConstraints(PromedioWorker.constraints) // Agregar restricciones de red
+            .build()
+
 
         // Observar el estado del trabajo de autenticación y perfil
         WorkManager.getInstance().getWorkInfoByIdLiveData(authAndProfileRequest.id)
@@ -368,32 +407,58 @@ class ProfileViewModel(
                 _calfFinalesSyncWorkerState.postValue(state)
             }
 
-
-        // Configurar el trabajo para la sincronización de calificaciones por unidad
-        val califUnidades = OneTimeWorkRequestBuilder<CalfUnidadesWorker>()
-            .setInputData(workDataOf("dataType" to "calfUni"))
-            .setConstraints(CalfUnidadesWorker.constraints) // Agregar restricciones de red
-            .build()
-
-        // Configurar el trabajo para la sincronización de calificaciones finales
-        val cargaAcademica = OneTimeWorkRequestBuilder<CargaAcademicaWorker>()
-            .setInputData(workDataOf("dataType" to "cargaAcademica"))
-            .setConstraints(CargaAcademicaWorker.constraints) // Agregar restricciones de red
-            .build()
-
-        // Configurar el trabajo para la sincronización de calificaciones finales
-        val kardex = OneTimeWorkRequestBuilder<KardexWorker>()
-            .setInputData(workDataOf("dataType" to "kardex"))
-            .setConstraints(KardexWorker.constraints) // Agregar restricciones de red
-            .build()
-
-        // Configurar el trabajo para la sincronización de calificaciones finales
-        val promedio = OneTimeWorkRequestBuilder<PromedioWorker>()
-            .setInputData(workDataOf("dataType" to "promedio"))
-            .setConstraints(PromedioWorker.constraints) // Agregar restricciones de red
-            .build()
+        // Observar el estado del trabajo de califUnidades
+        WorkManager.getInstance().getWorkInfoByIdLiveData(califUnidades.id)
+            .observeForever { workInfo ->
+                val state = when (workInfo.state) {
+                    WorkInfo.State.ENQUEUED -> WorkerState.ENQUEUED
+                    WorkInfo.State.RUNNING -> WorkerState.RUNNING
+                    WorkInfo.State.SUCCEEDED -> WorkerState.SUCCESS
+                    WorkInfo.State.FAILED -> WorkerState.FAILED
+                    else -> WorkerState.UNKNOWN
+                }
+                _calfUnidadesSyncWorkerState.postValue(state)
+            }
 
 
+        // Observar el estado del trabajo de sincronización de cargaAcademica
+        WorkManager.getInstance().getWorkInfoByIdLiveData(cargaAcademica.id)
+            .observeForever { workInfo ->
+                val state = when (workInfo.state) {
+                    WorkInfo.State.ENQUEUED -> WorkerState.ENQUEUED
+                    WorkInfo.State.RUNNING -> WorkerState.RUNNING
+                    WorkInfo.State.SUCCEEDED -> WorkerState.SUCCESS
+                    WorkInfo.State.FAILED -> WorkerState.FAILED
+                    else -> WorkerState.UNKNOWN
+                }
+                _cargaAcademicaSyncWorkerState.postValue(state)
+            }
+
+        // Observar el estado del trabajo de sincronización de kardex
+        WorkManager.getInstance().getWorkInfoByIdLiveData(kardex.id)
+            .observeForever { workInfo ->
+                val state = when (workInfo.state) {
+                    WorkInfo.State.ENQUEUED -> WorkerState.ENQUEUED
+                    WorkInfo.State.RUNNING -> WorkerState.RUNNING
+                    WorkInfo.State.SUCCEEDED -> WorkerState.SUCCESS
+                    WorkInfo.State.FAILED -> WorkerState.FAILED
+                    else -> WorkerState.UNKNOWN
+                }
+                _kardexSyncWorkerState.postValue(state)
+            }
+
+        // Observar el estado del trabajo de sincronización de promedio
+        WorkManager.getInstance().getWorkInfoByIdLiveData(promedio.id)
+            .observeForever { workInfo ->
+                val state = when (workInfo.state) {
+                    WorkInfo.State.ENQUEUED -> WorkerState.ENQUEUED
+                    WorkInfo.State.RUNNING -> WorkerState.RUNNING
+                    WorkInfo.State.SUCCEEDED -> WorkerState.SUCCESS
+                    WorkInfo.State.FAILED -> WorkerState.FAILED
+                    else -> WorkerState.UNKNOWN
+                }
+                _promedioSyncWorkerState.postValue(state)
+            }
 
         // Encadenar los trabajos para asegurar su ejecución en orden
         WorkManager.getInstance()
@@ -414,10 +479,9 @@ class ProfileViewModel(
             .then(promedio)
             .enqueue()
 
+
+
     }
-
-// En la clase ProfileViewModel, agrega funciones para guardar y obtener las credenciales almacenadas localmente
-
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

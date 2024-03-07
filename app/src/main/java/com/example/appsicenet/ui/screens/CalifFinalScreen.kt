@@ -67,24 +67,8 @@ fun CalfFinalScreen(navController: NavController, viewModel: ProfileViewModel, c
                     Text(text = "Cerrar sesión")
                 }
             }
-            item {
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            // Guardar la información al hacer clic en el botón "Guardar"
-                            viewModel.saveCalificacionesFinales(calificaciones)
-                            Log.d("SaveButton", "Save button clicked")
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(text = "Guardar")
-                }
 
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+
         }
 
     } else {

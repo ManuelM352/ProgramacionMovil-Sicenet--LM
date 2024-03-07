@@ -118,7 +118,7 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
                     //authenticate(context,matricula, contrasenia, navController, viewModel)
                     viewModel.matricula = matricula
                     viewModel.contrasenia = contrasenia
-                    viewModel.performLoginAndFetchAcademicProfile(navController)
+                    viewModel.performLoginAndFetchAcademicProfile(navController, context)
                     if(viewModel.accesoLoginResult?.acceso==true) {
                         viewModel.getCalificacionesFinales()
                         viewModel.getCalificacionesUnidades()
