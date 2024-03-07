@@ -84,36 +84,37 @@ class ProfileViewModel(
                 // Verificar si hay credenciales almacenadas localmente
                 val storedCredentials = localDataSource.getCredentials()
 
-                // Si hay credenciales almacenadas y coinciden con las ingresadas por el usuario
-                if (storedCredentials != null && storedCredentials.matricula == matricula &&
-                    storedCredentials.contrasenia == contrasenia) {
-                    // Obtener datos del perfil desde la base de datos local
+//                // Si hay credenciales almacenadas y coinciden con las ingresadas por el usuario
+//                if (storedCredentials != null && storedCredentials.matricula == matricula &&
+//                    storedCredentials.contrasenia == contrasenia) {
+//                    // Obtener datos del perfil desde la base de datos local
+//
+//                    // Obtener datos del perfil desde la base de datos local
+//                    val perfil = localDataSource.getAllPerfil()
+//                    attributes = perfil?.let {
+//                        Login(
+//                            especialidad = it.especialidad,
+//                            carrera = it.carrera,
+//                            nombre = it.nombre,
+//                            matricula = it.matricula
+//                        )
+//                    }
+//
+//                    // Navegar a la pantalla de perfil
+//                    navController.navigate("profile")
+//
+//                    // Indicar éxito en el estado de la UI
+//                    sicenetUiState = SicenetUiState.Success
+//                } else{
 
-                    // Obtener datos del perfil desde la base de datos local
-                    val perfil = localDataSource.getAllPerfil()
-                    attributes = perfil?.let {
-                        Login(
-                            especialidad = it.especialidad,
-                            carrera = it.carrera,
-                            nombre = it.nombre,
-                            matricula = it.matricula
-                        )
-                    }
-
-                    // Navegar a la pantalla de perfil
-                    navController.navigate("profile")
-
-                    // Indicar éxito en el estado de la UI
-                    sicenetUiState = SicenetUiState.Success
-                } else{
                     // Sincronizar datos utilizando WorkManager
-                    syncDataWithWorkManager(matricula ?: "", contrasenia ?: "")
+
 
                     // Esperar a que se complete la sincronización de datos
                     val loginResult = withContext(Dispatchers.IO) {
                         sicenetRepository.getLoginResult(matricula ?: "", contrasenia ?: "")
                     }
-
+                    syncDataWithWorkManager(matricula ?: "", contrasenia ?: "")
                     accesoLoginResult = loginResult
 
                     if (loginResult is LoginResult) {
@@ -129,7 +130,7 @@ class ProfileViewModel(
                     } else {
                         sicenetUiState = SicenetUiState.Error
                     }
-                }
+//                }
 
 
             } catch (e: IOException) {
@@ -172,7 +173,8 @@ class ProfileViewModel(
     fun getCalificacionesUnidades() {
         viewModelScope.launch {
             sicenetUiState = SicenetUiState.Loading
-            sicenetUiState = try {
+            try {
+                syncDataWithWorkManager(matricula ?: "", contrasenia ?: "")
                 val listResult = withContext(Dispatchers.IO){
                     sicenetRepository.getCalificacionesUnidades()
                 }
@@ -277,21 +279,31 @@ class ProfileViewModel(
             }
 
 
-        val calfUnidadSyncRequest = OneTimeWorkRequestBuilder<CalfUnidadesWorker>()
-            .setInputData(workDataOf("dataType" to "calfUnidades"))
+        // Configurar el trabajo para la sincronización de calificaciones por unidad
+        val califUnidades = OneTimeWorkRequestBuilder<CalfUnidadesWorker>()
+            .setInputData(workDataOf("dataType" to "calfUni"))
+            .setConstraints(CalfUnidadesWorker.constraints) // Agregar restricciones de red
             .build()
 
-        val cargaAcademicaSyncRequest = OneTimeWorkRequestBuilder<CargaAcademicaWorker>()
+        // Configurar el trabajo para la sincronización de calificaciones finales
+        val cargaAcademica = OneTimeWorkRequestBuilder<CargaAcademicaWorker>()
             .setInputData(workDataOf("dataType" to "cargaAcademica"))
+            .setConstraints(CargaAcademicaWorker.constraints) // Agregar restricciones de red
             .build()
+
 
         // Encadenar los trabajos para asegurar su ejecución en orden
         WorkManager.getInstance()
             .beginWith(authAndProfileRequest)
-            .then(dataSyncRequest)
-            //.then(calfUnidadSyncRequest)
-            //.then(cargaAcademicaSyncRequest)
+            .then(cargaAcademica)
             .enqueue()
+
+        // Encadenar los trabajos para asegurar su ejecución en orden
+        WorkManager.getInstance()
+            .beginWith(dataSyncRequest)
+            .then(califUnidades)
+            .enqueue()
+
     }
 
 // En la clase ProfileViewModel, agrega funciones para guardar y obtener las credenciales almacenadas localmente
