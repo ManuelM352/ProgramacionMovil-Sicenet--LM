@@ -7,6 +7,7 @@ import androidx.work.NetworkType
 import androidx.work.WorkerParameters
 import com.example.appsicenet.SicenetApplication
 import com.example.appsicenet.data.database.entities.PerfilEntities
+import java.util.Date
 
 class LoginWorker(
     context: Context,
@@ -26,6 +27,9 @@ class LoginWorker(
             // Obtener perfil
             val academicProfile = sicenetRepository.getAcademicProfile()
 
+            // Obtener fecha y hora actual
+            val fechaActual = Date().toString()
+
             // Almacenar en la base de datos local
             localDataSource.saveCredentials(
                 matricula =  matricula ?: "",
@@ -35,7 +39,8 @@ class LoginWorker(
                 nombre = academicProfile.nombre ?: "",
                 carrera = academicProfile.carrera ?: "",
                 especialidad = academicProfile.especialidad ?: "",
-                matricula = academicProfile.matricula ?: ""
+                matricula = academicProfile.matricula ?: "",
+                fecha = fechaActual // Aquí asignamos la fecha y hora actual
             ))
 
             return Result.success()

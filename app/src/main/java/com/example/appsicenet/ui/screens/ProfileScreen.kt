@@ -27,12 +27,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.appsicenet.navegation.NavigationScreens
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.EnvelopeCalf
 import com.example.appsicenet.workers.WorkerState
@@ -111,6 +113,11 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
                     ),
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
+                Text(
+                    text = "${attributes?.fecha ?: ""}",
+                    style = TextStyle(fontSize = 16.sp, color = Color.Gray),
+                    modifier = Modifier.padding(top = 16.dp)
+                )
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = {
@@ -134,6 +141,8 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel) {
                 )
             }
         }
+
+
         when {
             viewModel.calfFinalesSyncWorkerState.value == WorkerState.SUCCESS &&
                     viewModel.calfUnidadesSyncWorkerState.value == WorkerState.SUCCESS &&

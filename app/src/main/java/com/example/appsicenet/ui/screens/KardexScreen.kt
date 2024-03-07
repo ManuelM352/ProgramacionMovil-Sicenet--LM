@@ -16,10 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.appsicenet.navegation.NavigationScreens
 
@@ -73,6 +75,12 @@ fun KardexScreen(navController: NavController, viewModel: ProfileViewModel) {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
+                Text(
+                    text = "${kardex.promedio?.fecha ?: ""}",
+                    style = TextStyle(fontSize = 16.sp, color = Color.Gray),
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+
             }
 
             // Muestra el promedio general

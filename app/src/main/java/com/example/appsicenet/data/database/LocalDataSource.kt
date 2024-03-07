@@ -1,6 +1,5 @@
 package com.example.appsicenet.data.database
 
-import androidx.room.ColumnInfo
 import com.example.appsicenet.data.database.dao.CalfFinalDao
 import com.example.appsicenet.data.database.dao.CalfUnidadDao
 import com.example.appsicenet.data.database.dao.CargaAcademicaDao
@@ -9,7 +8,7 @@ import com.example.appsicenet.data.database.dao.PerfilDao
 import com.example.appsicenet.data.database.dao.PromedioDao
 import com.example.appsicenet.data.database.dao.loginDao
 import com.example.appsicenet.data.database.entities.CalfUnidadEnties
-import com.example.appsicenet.data.database.entities.CargaAcademicaEntities
+import com.example.appsicenet.data.database.entities.CalificacionesFinalesEntities
 import com.example.appsicenet.data.database.entities.Credentials
 import com.example.appsicenet.data.database.entities.KardexEntities
 import com.example.appsicenet.data.database.entities.PerfilEntities
@@ -19,6 +18,7 @@ import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.CargaAcademica
 import com.example.appsicenet.models.KardexItem
+import java.util.Date
 
 class LocalDataSource(
     private val calfFinalDao: CalfFinalDao,
@@ -29,17 +29,18 @@ class LocalDataSource(
     private val kardexItemDao: KardexItemDao,
     private val promedioDao: PromedioDao
 ) {
-
+    val fechaActual = Date().toString()
     //INSERCIÓN Y OBTENCIÓN DE LAS CALIFICACIONES FINALES
     suspend fun insertCalificaciones(calificaciones: List<CalificacionesFinales>) {
         calfFinalDao.deleteAllFromClafFinal()
         val entities = calificaciones.map { calificacion ->
-            CargaAcademicaEntities(
+            CalificacionesFinalesEntities(
                 calif = calificacion.calif ?: 0,
                 acred = calificacion.acred ?: "",
                 grupo = calificacion.grupo ?: "",
                 materia = calificacion.materia ?: "",
-                Observaciones = calificacion.Observaciones ?: ""
+                Observaciones = calificacion.Observaciones ?: "",
+                fecha = fechaActual
             )
         }
         calfFinalDao.insertAll(entities)
@@ -53,7 +54,8 @@ class LocalDataSource(
                 acred = entity.acred,
                 grupo = entity.grupo,
                 materia = entity.materia,
-                Observaciones = entity.Observaciones
+                Observaciones = entity.Observaciones,
+                fecha = entity.fecha
             )
         }
     }
@@ -70,7 +72,8 @@ class LocalDataSource(
                 especialidad = it.especialidad,
                 carrera = it.carrera,
                 nombre = it.nombre,
-                matricula = it.matricula
+                matricula = it.matricula,
+                fecha = it.fecha
             )
         }
     }
@@ -100,7 +103,8 @@ class LocalDataSource(
                 c1 = calificacionU.c1?: "",
                 unidadesActivas = calificacionU.unidadesActivas?: "",
                 materia = calificacionU.materia?: "",
-                grupo = calificacionU.grupo?: ""
+                grupo = calificacionU.grupo?: "",
+                fecha = fechaActual
 
             )
         }
@@ -119,7 +123,8 @@ class LocalDataSource(
                 c1 = calificacionU.c1,
                 unidadesActivas = calificacionU.unidadesActivas,
                 materia = calificacionU.materia,
-                grupo = calificacionU.grupo
+                grupo = calificacionU.grupo,
+                fecha = calificacionU.fecha
             )
         }
     }
@@ -142,7 +147,8 @@ class LocalDataSource(
                 estadoMateria = enties.estadoMateria?: "",
                 creditosMateria = enties.creditosMateria?: 0,
                 materia = enties.materia?: "",
-                grupo = enties.grupo?: ""
+                grupo = enties.grupo?: "",
+                fecha = fechaActual
 
             )
         }
@@ -166,7 +172,8 @@ class LocalDataSource(
                 estadoMateria = enties.estadoMateria,
                 creditosMateria = enties.creditosMateria,
                 materia = enties.materia,
-                grupo = enties.grupo
+                grupo = enties.grupo,
+                fecha = enties.fecha
             )
         }
     }
@@ -191,7 +198,7 @@ class LocalDataSource(
                 s2 = enties.s2,
                 p2 = enties.p2,
                 a2 = enties.a2,
-                fecha = enties.fecha
+                fecha = fechaActual
             )
         }
         kardexItemDao.insertAllKardex(entities)
@@ -216,7 +223,7 @@ class LocalDataSource(
                 s2 = enties.s2,
                 p2 = enties.p2,
                 a2 = enties.a2,
-                fecha = enties.fecha
+                fecha = fechaActual
             )
         }
     }

@@ -54,6 +54,7 @@ fun CalfFinalScreen(navController: NavController, viewModel: ProfileViewModel, c
                     Text(text = "Materia: ${calificacion.materia}")
                     Text(text = "Observaciones: ${calificacion.Observaciones}")
                 }
+
                 // Agrega un separador entre cada calificación final
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -67,8 +68,13 @@ fun CalfFinalScreen(navController: NavController, viewModel: ProfileViewModel, c
                     Text(text = "Cerrar sesión")
                 }
             }
-
-
+            item {
+                Text(
+                    text = "${calificaciones.firstOrNull()?.fecha ?: ""}",
+                    style = TextStyle(fontSize = 16.sp, color = Color.Gray),
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+            }
         }
 
     } else {

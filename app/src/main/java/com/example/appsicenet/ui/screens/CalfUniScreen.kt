@@ -17,14 +17,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CargaAcademica
 import com.example.appsicenet.navegation.NavigationScreens
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalfUniScreen(navController: NavController, viewModel: ProfileViewModel, calificaciones: List<CalificacionUnidades>?) {
     if (!calificaciones.isNullOrEmpty()) {
@@ -60,6 +60,13 @@ fun CalfUniScreen(navController: NavController, viewModel: ProfileViewModel, cal
                 ) {
                     Text(text = "Cerrar sesión")
                 }
+            }
+            item {
+                Text(
+                    text = "${calificaciones.firstOrNull()?.fecha ?: ""}",
+                    style = TextStyle(fontSize = 16.sp, color = Color.Gray),
+                    modifier = Modifier.padding(top = 16.dp)
+                )
             }
         }
 

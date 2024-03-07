@@ -129,7 +129,8 @@ data class Login(
     val especialidad: String? = null,
     val carrera: String? = null,
     val nombre: String? = null,
-    val matricula:String? = null
+    val matricula:String? = null,
+    val fecha: String = ""
 )
 
 
@@ -139,7 +140,9 @@ data class CalificacionesFinales(
     val acred: String? = null,
     val grupo: String? = null,
     val materia: String? = null,
-    val Observaciones: String? = null
+    val Observaciones: String? = null,
+    @SerialName("fecha")
+    val fecha: String = ""
 )
 
 
@@ -162,7 +165,9 @@ data class CalificacionUnidades(
     @SerialName("Materia")
     val materia: String?= null,
     @SerialName("Grupo")
-    val grupo: String?= null
+    val grupo: String?= null,
+    @SerialName("fecha")
+    val fecha: String = ""
 )
 
 
@@ -281,7 +286,9 @@ data class CargaAcademica(
     @SerialName("Materia")
     val materia: String,
     @SerialName("Grupo")
-    val grupo: String
+    val grupo: String,
+    @SerialName("fecha")
+    val fecha: String = ""
 )
 
 @Serializable

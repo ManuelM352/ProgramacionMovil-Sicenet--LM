@@ -117,7 +117,8 @@ class ProfileViewModel(
                             especialidad = it.especialidad,
                             carrera = it.carrera,
                             nombre = it.nombre,
-                            matricula = it.matricula
+                            matricula = it.matricula,
+                            fecha = it.fecha
                         )
                     }
 
@@ -129,7 +130,8 @@ class ProfileViewModel(
                             acred = it.acred,
                             grupo = it.grupo,
                             materia = it.materia,
-                            Observaciones = it.Observaciones
+                            Observaciones = it.Observaciones,
+                            fecha = it.fecha
                         )
                     }
 
@@ -145,7 +147,8 @@ class ProfileViewModel(
                             c1 = it.c1,
                             unidadesActivas = it.unidadesActivas,
                             materia = it.materia,
-                            grupo = it.grupo
+                            grupo = it.grupo,
+                            fecha = it.fecha
                         )
                     }
 
@@ -166,7 +169,8 @@ class ProfileViewModel(
                             estadoMateria = it.estadoMateria,
                             creditosMateria = it.creditosMateria,
                             materia = it.materia,
-                            grupo = it.grupo
+                            grupo = it.grupo,
+                            fecha = it.fecha
                         )
                     }
 

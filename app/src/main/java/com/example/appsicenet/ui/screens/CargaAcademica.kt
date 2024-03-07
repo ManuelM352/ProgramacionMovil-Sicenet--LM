@@ -19,18 +19,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.appsicenet.models.CargaAcademica
 import com.example.appsicenet.navegation.NavigationScreens
 import kotlinx.coroutines.launch
 import kotlin.math.log
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CargaAcademica(navController: NavController, viewModel: ProfileViewModel, calificaciones: List<CargaAcademica>?) {
-    //val calificaciones = viewModel.cargaAcademica
     val coroutineScope = rememberCoroutineScope()
     if (!calificaciones.isNullOrEmpty()) {
         LazyColumn(
@@ -46,8 +46,8 @@ fun CargaAcademica(navController: NavController, viewModel: ProfileViewModel, ca
                         .background(color = Color.LightGray)
                         .fillMaxWidth()
                 ) {
-                    Text(text = "semipresencial: ${calificacion.viernes}")
-                    Text(text = "observaciones: ${calificacion.jueves}")
+                    Text(text = "semipresencial: ${calificacion.semipresencial}")
+                    Text(text = "observaciones: ${calificacion.observaciones}")
                     Text(text = "Grupo: ${calificacion.grupo}")
                     Text(text = "Materia: ${calificacion.materia}")
                     Text(text = "Observaciones: ${calificacion.docente}")
@@ -69,7 +69,6 @@ fun CargaAcademica(navController: NavController, viewModel: ProfileViewModel, ca
                 ) {
                     Text(text = "Guardar")
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
             }
             item {
@@ -83,7 +82,11 @@ fun CargaAcademica(navController: NavController, viewModel: ProfileViewModel, ca
                 }
             }
         }
-
+        Text(
+            text = "${calificaciones.firstOrNull()?.fecha ?: ""}",
+            style = TextStyle(fontSize = 16.sp, color = Color.Gray),
+            modifier = Modifier.padding(top = 16.dp)
+        )
     } else {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "No se pudieron obtener las calificaciones")

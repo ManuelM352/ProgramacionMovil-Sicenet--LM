@@ -5,22 +5,18 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.appsicenet.data.database.SicenetDatabase
-import com.example.appsicenet.models.KardexItem
-import com.example.appsicenet.models.Promedio
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
 
 @Entity(tableName = "calificacionFinal_table")
-data class CargaAcademicaEntities (
+data class CalificacionesFinalesEntities (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0,
     @ColumnInfo(name = "calif") val calif: Int,
     @ColumnInfo(name = "acred") val acred: String,
     @ColumnInfo(name = "grupo") val grupo: String,
     @ColumnInfo(name = "materia") val materia: String,
-    @ColumnInfo(name = "Observaciones") val Observaciones: String
+    @ColumnInfo(name = "Observaciones") val Observaciones: String,
+    @ColumnInfo(name = "fecha") val fecha: String
 )
 
 
@@ -31,7 +27,8 @@ data class PerfilEntities (
     @ColumnInfo(name = "especialidad") val especialidad: String,
     @ColumnInfo(name = "carrera") val carrera: String,
     @ColumnInfo(name = "nombre") val nombre: String,
-    @ColumnInfo(name = "matricula") val matricula: String
+    @ColumnInfo(name = "matricula") val matricula: String,
+    @ColumnInfo(name = "fecha") val fecha: String
 )
 
 @Entity(tableName = "credentials_table")
@@ -54,7 +51,8 @@ data class CalfUnidadEnties(
     @ColumnInfo(name = "c1") val c1: String,
     @ColumnInfo(name = "unidadesActivas") val unidadesActivas: String,
     @ColumnInfo(name = "materia") val materia: String,
-    @ColumnInfo(name = "grupo") val grupo: String
+    @ColumnInfo(name = "grupo") val grupo: String,
+    @ColumnInfo(name = "fecha") val fecha: String
 )
 
 @Entity(tableName = "cargaAcademica_table")
@@ -74,7 +72,8 @@ data class cargaAcademicaEnties(
     @ColumnInfo(name = "estadoMateria") val estadoMateria: String,
     @ColumnInfo(name = "creditosMateria") val creditosMateria: Int,
     @ColumnInfo(name = "materia") val materia: String,
-    @ColumnInfo(name = "grupo") val grupo: String
+    @ColumnInfo(name = "grupo") val grupo: String,
+    @ColumnInfo(name = "fecha") val fecha: String
 
 )
 

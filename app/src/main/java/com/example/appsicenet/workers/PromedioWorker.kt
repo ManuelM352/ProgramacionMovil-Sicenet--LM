@@ -7,6 +7,7 @@ import androidx.work.NetworkType
 import androidx.work.WorkerParameters
 import com.example.appsicenet.SicenetApplication
 import com.example.appsicenet.data.database.entities.PromedioEntities
+import java.util.Date
 
 class PromedioWorker (
     context: Context,
@@ -17,6 +18,7 @@ class PromedioWorker (
         val sicenetRepository = (applicationContext as SicenetApplication).container.sicenetRepository
         val localDataSource = (applicationContext as SicenetApplication).container.localDataSource
         try {
+            val fechaActual = Date().toString()
             val dataType = inputData.getString("dataType")
             when (dataType) {
                 "promedio" -> {
@@ -30,7 +32,7 @@ class PromedioWorker (
                             matCursadas = it.matCursadas,
                             matAprobadas = it.matAprobadas,
                             avanceCdts = it.avanceCdts,
-                            fecha = it.fecha
+                            fecha = fechaActual
                         )
                         localDataSource.insertPromedio(promedioEntities)
                     }
