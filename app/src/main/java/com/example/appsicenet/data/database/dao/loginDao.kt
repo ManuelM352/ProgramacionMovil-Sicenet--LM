@@ -12,7 +12,7 @@ interface loginDao {
     suspend fun getCredentials(): Credentials?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(credentials: Credentials)
+    suspend fun insertCredentials(credentials: Credentials)
 
     @Query("DELETE FROM credentials_table")
     suspend fun deleteAllFromcredentials()

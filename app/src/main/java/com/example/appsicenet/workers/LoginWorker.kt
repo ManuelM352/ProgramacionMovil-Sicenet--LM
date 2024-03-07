@@ -21,15 +21,15 @@ class LoginWorker(
             // Autenticación
             val matricula = inputData.getString("matricula")
             val contrasenia = inputData.getString("contrasenia")
-            val loginResult = sicenetRepository.getLoginResult(matricula ?: "", contrasenia ?: "")
+
 
             // Obtener perfil
             val academicProfile = sicenetRepository.getAcademicProfile()
 
             // Almacenar en la base de datos local
             localDataSource.saveCredentials(
-                matricula =  loginResult.matricula ?: "",
-                contrasenia =  loginResult.contrasenia ?: "")
+                matricula =  matricula ?: "",
+                contrasenia =  contrasenia ?: "")
 
             localDataSource.insertPerfil(PerfilEntities(
                 nombre = academicProfile.nombre ?: "",

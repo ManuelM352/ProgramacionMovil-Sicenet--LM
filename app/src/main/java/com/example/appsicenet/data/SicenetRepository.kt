@@ -2,8 +2,7 @@ package com.example.appsicenet.data
 
 
 import com.example.appsicenet.data.database.LocalDataSource
-import com.example.appsicenet.data.database.entities.PerfilEntities
-import com.example.appsicenet.models.Attributes
+import com.example.appsicenet.models.Login
 import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.CargaAcademica
@@ -22,7 +21,7 @@ import java.io.IOException
 
 interface SicenetRepository {
     suspend fun getLoginResult(matricula: String, contrasenia: String): LoginResult
-    suspend fun getAcademicProfile(): Attributes
+    suspend fun getAcademicProfile(): Login
     suspend fun getCalificacionesFinales(): List<CalificacionesFinales>
     suspend fun getCalificacionesUnidades(): List<CalificacionUnidades>
     suspend fun getKardex(): Kardex
@@ -46,14 +45,14 @@ class NetworkSicenetRepository(
         }
     }
 
-    override suspend fun getAcademicProfile(): Attributes {
+    override suspend fun getAcademicProfile(): Login {
         val response = sicenetApiService.getAcademicProfile(profileRequestBody()).execute()
         if (response.isSuccessful) {
             val envelope = response.body()
             val alumnoResultJson: String? =
                 envelope?.body?.getAlumnoAcademicoWithLineamientoResponse?.getAlumnoAcademicoWithLineamientoResult
             val json = Json { ignoreUnknownKeys = true }
-            val academicProfile = alumnoResultJson?.let { json.decodeFromString(it) } ?: Attributes()
+            val academicProfile = alumnoResultJson?.let { json.decodeFromString(it) } ?: Login()
 
             return academicProfile
         } else {
@@ -83,15 +82,9 @@ class NetworkSicenetRepository(
             val envelope = response.body()
             val alumnoResultJson: String? =
                 envelope?.bodyCalfUni?.getCalifUnidadesByAlumnoResponse?.getCalifUnidadesByAlumnoResult
-
             val json = Json { ignoreUnknownKeys = true; coerceInputValues = true }
-
-//            return alumnoResultJson?.let { json.decodeFromString<List<CargaAcademica>>(it) }
             val carga: List<CalificacionUnidades> = json.decodeFromString(alumnoResultJson ?: "")
             return carga
-            // Devuelve una lista vacía si el JSON es nulo
-
-
         } else {
             throw IOException("Error en la obtencion del perfil código: ${response.code()}")
         }
@@ -104,7 +97,6 @@ class NetworkSicenetRepository(
             val alumnoResultJson: String? =
                 envelope?.bodyKardex?.getAllKardexConPromedioByAlumnoResponse?.getAllKardexConPromedioByAlumnoResult
             val json = Json { ignoreUnknownKeys = true }
-            //val addCookiesInterceptor = AddCookiesInterceptor(context)
             return alumnoResultJson?.let { json.decodeFromString(it) } ?: Kardex()
         } else {
 
@@ -119,12 +111,8 @@ class NetworkSicenetRepository(
             val alumnoResultJson: String? =
                 envelope?.bodyCargaAcademica?.getCargaAcademicaByAlumnoResponse?.getCargaAcademicaByAlumnoResult
             val json = Json { ignoreUnknownKeys = true; coerceInputValues = true }
-
-//            return alumnoResultJson?.let { json.decodeFromString<List<CargaAcademica>>(it) }
             val carga: List<CargaAcademica> = json.decodeFromString(alumnoResultJson ?: "")
-            
             return carga
-            // Devuelve una lista vacía si el JSON es nulo
         } else {
             throw IOException("Error en la obtencion del perfil código: ${response.code()}")
         }

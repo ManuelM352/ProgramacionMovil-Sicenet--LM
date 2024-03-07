@@ -7,7 +7,7 @@ import androidx.room.Query
 import com.example.appsicenet.data.database.entities.CargaAcademicaEntities
 import com.example.appsicenet.data.database.entities.PerfilEntities
 
-//23:34
+//
 @Dao
 interface CalfFinalDao {
     @Query("SELECT * FROM calificacionFinal_table ORDER BY materia DESC")

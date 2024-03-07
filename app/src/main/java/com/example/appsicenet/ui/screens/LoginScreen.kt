@@ -18,8 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +39,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.appsicenet.data.database.LocalDataSource
 import com.example.appsicenet.workers.WorkerState
 
 
@@ -45,11 +49,14 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
     var matricula by remember { mutableStateOf("") }
     var contrasenia by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var saveSession by remember { mutableStateOf(false) } // Aquí se define la variable saveSession
     val context = LocalContext.current
+    val localDataSource: LocalDataSource
     val h4TextStyle = androidx.compose.ui.text.TextStyle(
         fontSize = 24.sp, // Tamaño de fuente deseado
         fontWeight = FontWeight.Bold // Peso de la fuente deseado
     )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -92,30 +99,50 @@ fun LoginScreen(navController: NavController, viewModel: ProfileViewModel) {
                 )
             }
         }
-        Spacer(modifier = Modifier.height(32.dp))
-        Button(
-            onClick = {
-                viewModel.matricula = matricula
-                viewModel.contrasenia = contrasenia
-                viewModel.performLoginAndFetchAcademicProfile(navController)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
         ) {
-            Text("Iniciar sesión")
+            Checkbox(
+                checked = saveSession,
+                onCheckedChange = { saveSession = it },
+                modifier = Modifier.padding(end = 8.dp),
+                colors = CheckboxDefaults.colors(MaterialTheme.colorScheme.primary)
+            )
+            Text(text = "Guardar sesión")
         }
+            Spacer(modifier = Modifier.height(32.dp))
+            Button(
+                onClick = {
+                    //authenticate(context,matricula, contrasenia, navController, viewModel)
+                    viewModel.matricula = matricula
+                    viewModel.contrasenia = contrasenia
+                    viewModel.performLoginAndFetchAcademicProfile(navController)
+                    if(viewModel.accesoLoginResult?.acceso==true) {
+                        viewModel.getCalificacionesFinales()
+                        viewModel.getCalificacionesUnidades()
+                        viewModel.getKardex()
+                        viewModel.getCargaAcademica()
+                    }
 
-        // Observa el estado del Worker de inicio de sesión y muestra un mensaje de error si es necesario
-        when (viewModel.loginWorkerState.value) {
-            WorkerState.FAILED -> {
-                showError(context, "Error al iniciar sesión. Verifica tus credenciales e intenta nuevamente.")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+            ) {
+                Text("Iniciar sesión")
+
+            // Observa el estado del Worker de inicio de sesión y muestra un mensaje de error si es necesario
+            when (viewModel.loginWorkerState.value) {
+                WorkerState.FAILED -> {
+                    showError(context, "Error al iniciar sesión. Verifica tus credenciales e intenta nuevamente.")
+                }
+                else -> {}
             }
-            else -> {}
         }
     }
 }
-
 fun showError(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

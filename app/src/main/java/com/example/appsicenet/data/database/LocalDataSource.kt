@@ -10,10 +10,10 @@ import com.example.appsicenet.data.database.entities.CargaAcademicaEntities
 import com.example.appsicenet.data.database.entities.Credentials
 import com.example.appsicenet.data.database.entities.PerfilEntities
 import com.example.appsicenet.data.database.entities.cargaAcademicaEnties
-import com.example.appsicenet.models.Attributes
 import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.CargaAcademica
+import com.example.appsicenet.models.Login
 
 class LocalDataSource(
     private val calfFinalDao: CalfFinalDao,
@@ -50,18 +50,35 @@ class LocalDataSource(
             )
         }
     }
-
     //INSERCIÓN Y OBTENCION DEL PERFIL
     suspend fun insertPerfil(perfil: PerfilEntities) {
         perfilDao.deleteAllFromPerfil()
         perfilDao.insertAll(perfil)
     }
 
+    suspend fun getAllPerfil(): PerfilEntities? {
+        val entities = perfilDao.getAllPerfil()
+        return entities?.let {
+            PerfilEntities(
+                especialidad = it.especialidad,
+                carrera = it.carrera,
+                nombre = it.nombre,
+                matricula = it.matricula
+            )
+        }
+    }
+
+    suspend fun getPerfil() {
+        perfilDao.getAllPerfil()
+    }
     //CREDENCIALES DEL INICIO DE SECIÓN
     suspend fun saveCredentials(matricula: String, contrasenia: String) {
         credentialDao.deleteAllFromcredentials()
         val credentials = Credentials(matricula = matricula, contrasenia =  contrasenia)
-        credentialDao.insert(credentials)
+        credentialDao.insertCredentials(credentials)
+    }
+    suspend fun getCredentials(): Credentials? {
+        return credentialDao.getCredentials()
     }
 
     suspend fun insertCalificacionesUnidad(calificaciones: List<CalificacionUnidades>) {
@@ -99,7 +116,6 @@ class LocalDataSource(
             )
         }
     }
-
 
     //INSERCIÓN Y OBTENCIÓN DE LA CARGA ACADEMICA
     suspend fun insertCargaAcademica(cargaAcademica: List<CargaAcademica>) {
@@ -147,6 +163,4 @@ class LocalDataSource(
             )
         }
     }
-
-
 }

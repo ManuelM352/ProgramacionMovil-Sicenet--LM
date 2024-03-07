@@ -21,7 +21,7 @@ import com.example.appsicenet.SicenetApplication
 import com.example.appsicenet.data.SicenetRepository
 import com.example.appsicenet.data.database.LocalDataSource
 
-import com.example.appsicenet.models.Attributes
+import com.example.appsicenet.models.Login
 import com.example.appsicenet.models.CalificacionUnidades
 import com.example.appsicenet.models.CalificacionesFinales
 import com.example.appsicenet.models.CargaAcademica
@@ -46,16 +46,15 @@ sealed interface SicenetUiState {
 
 
 }
-
 class ProfileViewModel(
     private val sicenetRepository: SicenetRepository,
     private val localDataSource: LocalDataSource,
     private val workManager: WorkManager
-): ViewModel() {
+) : ViewModel() {
 
     var accesoLoginResult: LoginResult? = null
 
-    var attributes: Attributes? = null
+    var attributes: Login? = null
 
     var calificacionesFinales: List<CalificacionesFinales>? = null
 
@@ -82,30 +81,57 @@ class ProfileViewModel(
         viewModelScope.launch {
             sicenetUiState = SicenetUiState.Loading
             try {
-                // Sincronizar datos utilizando WorkManager
-                syncDataWithWorkManager(matricula ?: "", contrasenia ?: "")
+                // Verificar si hay credenciales almacenadas localmente
+                val storedCredentials = localDataSource.getCredentials()
 
-                // Esperar a que se complete la sincronización de datos
-                val loginResult = withContext(Dispatchers.IO) {
-                    sicenetRepository.getLoginResult(matricula ?: "", contrasenia ?: "")
-                }
+                // Si hay credenciales almacenadas y coinciden con las ingresadas por el usuario
+                if (storedCredentials != null && storedCredentials.matricula == matricula &&
+                    storedCredentials.contrasenia == contrasenia) {
+                    // Obtener datos del perfil desde la base de datos local
 
-                accesoLoginResult = loginResult
-                Log.d("Exito", "result${accesoLoginResult}}")
-
-                if (loginResult is LoginResult) {
-                    val academicProfileResult = withContext(Dispatchers.IO) {
-                        sicenetRepository.getAcademicProfile()
+                    // Obtener datos del perfil desde la base de datos local
+                    val perfil = localDataSource.getAllPerfil()
+                    attributes = perfil?.let {
+                        Login(
+                            especialidad = it.especialidad,
+                            carrera = it.carrera,
+                            nombre = it.nombre,
+                            matricula = it.matricula
+                        )
                     }
-                    attributes = academicProfileResult
-
-                    sicenetUiState = SicenetUiState.Success
 
                     // Navegar a la pantalla de perfil
                     navController.navigate("profile")
-                } else {
-                    sicenetUiState = SicenetUiState.Error
+
+                    // Indicar éxito en el estado de la UI
+                    sicenetUiState = SicenetUiState.Success
+                } else{
+                    // Sincronizar datos utilizando WorkManager
+                    syncDataWithWorkManager(matricula ?: "", contrasenia ?: "")
+
+                    // Esperar a que se complete la sincronización de datos
+                    val loginResult = withContext(Dispatchers.IO) {
+                        sicenetRepository.getLoginResult(matricula ?: "", contrasenia ?: "")
+                    }
+
+                    accesoLoginResult = loginResult
+
+                    if (loginResult is LoginResult) {
+                        val academicProfileResult = withContext(Dispatchers.IO) {
+                            sicenetRepository.getAcademicProfile()
+                        }
+                        attributes = academicProfileResult
+
+                        sicenetUiState = SicenetUiState.Success
+
+                        // Navegar a la pantalla de perfil
+                        navController.navigate("profile")
+                    } else {
+                        sicenetUiState = SicenetUiState.Error
+                    }
                 }
+
+
             } catch (e: IOException) {
                 sicenetUiState = SicenetUiState.Error
             } catch (e: HttpException) {
@@ -268,6 +294,7 @@ class ProfileViewModel(
             .enqueue()
     }
 
+// En la clase ProfileViewModel, agrega funciones para guardar y obtener las credenciales almacenadas localmente
 
 
     companion object {

@@ -125,7 +125,7 @@ data class GetCargaAcademicaByAlumnoResponse @JvmOverloads constructor(
 
 
 @Serializable
-data class Attributes(
+data class Login(
     val especialidad: String? = null,
     val carrera: String? = null,
     val nombre: String? = null,

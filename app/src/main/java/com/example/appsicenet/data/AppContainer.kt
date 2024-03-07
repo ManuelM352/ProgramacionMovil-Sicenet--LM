@@ -19,11 +19,8 @@ interface AppContainer {
     val sicenetRepository : SicenetRepository
     val localDataSource: LocalDataSource // Agregar LocalDataSource al AppContainer
 }
-
 class DefaultAppContainer(context: Context): AppContainer {
-
     private val BASE_URL = "https://sicenet.surguanajuato.tecnm.mx"
-
     //Obtención de cookies para la obtención de información
     private val client = OkHttpClient.Builder()
         .addInterceptor(AddCookiesInterceptor(context))
@@ -54,7 +51,6 @@ class DefaultAppContainer(context: Context): AppContainer {
                 .build()
         }
     }
-
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(SimpleXmlConverterFactory.createNonStrict(Persister(AnnotationStrategy())))
         .client(client)
@@ -64,16 +60,11 @@ class DefaultAppContainer(context: Context): AppContainer {
     val retrofitService: SICENETApiService by lazy {
         retrofit.create(SICENETApiService::class.java)
     }
-
-
     override val localDataSource: LocalDataSource by lazy {
         val database = SicenetDatabase.getDatabase(context)
         LocalDataSource(database.getCalfFinal(), database.getPerfilDao(), database.getLogin(), database.getCalfUnidad(), database.getCargaAcademica())
     }
-
-
     override val sicenetRepository: SicenetRepository by lazy {
         NetworkSicenetRepository(retrofitService, localDataSource)
     }
-
 }
